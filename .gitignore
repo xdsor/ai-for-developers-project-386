@@ -1,2 +1,6 @@
 # tmp files
 tmp.txt
+node_modules
+dist
+.DS_Store
+web/.env

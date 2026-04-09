@@ -1,0 +1,16 @@
+{
+  "name": "meeting-booking-workspace",
+  "private": true,
+  "scripts": {
+    "spec:build": "npm --prefix typespec run build:openapi",
+    "spec:watch": "npm --prefix typespec run watch:openapi",
+    "mock": "prism mock typespec/tsp-output/schema/openapi.yaml --host 127.0.0.1 --port 4010 --dynamic",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "dev": "concurrently -k -n spec,mock,web -c yellow,cyan,green \"npm run spec:watch\" \"npm run mock\" \"npm run web:dev\""
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.14.2",
+    "concurrently": "^9.2.1"
+  }
+}

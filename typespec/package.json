@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "build:openapi": "tsp compile .",
+    "watch:openapi": "tsp compile . --watch"
+  },
   "dependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
