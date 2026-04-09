@@ -44,7 +44,7 @@ model GuestContact {
 model TimeSlot {
   startAt: utcDateTime;
   endAt: utcDateTime;
-  available: true;
+  available: boolean;
 }
 
 @doc("Meeting reservation created by a guest for an event.")

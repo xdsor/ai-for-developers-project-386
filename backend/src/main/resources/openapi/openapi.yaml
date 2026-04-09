@@ -1,0 +1,557 @@
+openapi: 3.1.0
+info:
+  title: Meeting Booking Service
+  version: 0.0.0
+tags:
+  - name: Public Users
+  - name: Public Bookings
+  - name: Admin Users
+  - name: Admin Events
+  - name: Admin Bookings
+paths:
+  /admin/users/{userId}:
+    get:
+      operationId: AdminUsers_read
+      description: Read a user by id.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Users
+  /admin/users/{userId}/bookings:
+    get:
+      operationId: AdminBookings_list
+      description: List bookings for a user across all owned events.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingList'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Bookings
+  /admin/users/{userId}/events:
+    get:
+      operationId: AdminEvents_list
+      description: List events owned by a user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Events
+    post:
+      operationId: AdminEvents_create
+      description: Create an event owned by a user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+  /admin/users/{userId}/events/{eventId}:
+    get:
+      operationId: AdminEvents_read
+      description: Read an event owned by a user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Events
+    patch:
+      operationId: AdminEvents_update
+      description: Update an event owned by a user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
+    delete:
+      operationId: AdminEvents_delete
+      description: Delete an event owned by a user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Admin Events
+  /users/{userSlug}:
+    get:
+      operationId: PublicUsers_readProfile
+      description: Get a public user profile and all events created by that user.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Public Users
+  /users/{userSlug}/events:
+    get:
+      operationId: PublicUsers_listEvents
+      description: List public events created by a user.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Public Users
+  /users/{userSlug}/events/{eventSlug}:
+    get:
+      operationId: PublicUsers_readEvent
+      description: Get a public event by user slug and event slug.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Public Users
+  /users/{userSlug}/events/{eventSlug}/bookings:
+    post:
+      operationId: PublicBookings_createBooking
+      description: Create a booking for a free slot in the event owner's 14-day booking window.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Public Bookings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+  /users/{userSlug}/events/{eventSlug}/slots:
+    get:
+      operationId: PublicBookings_listSlots
+      description: List free slots for the next 14 days from the owner's current date.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlotList'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Public Bookings
+components:
+  schemas:
+    Booking:
+      type: object
+      required:
+        - id
+        - eventId
+        - ownerId
+        - guest
+        - startAt
+        - endAt
+        - createdAt
+      properties:
+        id:
+          type: string
+        eventId:
+          type: string
+        ownerId:
+          type: string
+        guest:
+          $ref: '#/components/schemas/GuestContact'
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      description: Meeting reservation created by a guest for an event.
+    BookingList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'
+    CreateBookingRequest:
+      type: object
+      required:
+        - guest
+        - startAt
+      properties:
+        guest:
+          $ref: '#/components/schemas/GuestContact'
+        startAt:
+          type: string
+          format: date-time
+    CreateEventRequest:
+      type: object
+      required:
+        - title
+        - description
+        - durationMinutes
+        - slug
+      properties:
+        title:
+          $ref: '#/components/schemas/NonEmptyString'
+        description:
+          type: string
+        durationMinutes:
+          $ref: '#/components/schemas/PositiveDurationMinutes'
+        slug:
+          $ref: '#/components/schemas/NonEmptyString'
+    Email:
+      type: string
+      format: email
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+    ErrorCode:
+      type: string
+      enum:
+        - NotFound
+        - ValidationFailed
+        - SlotOutsideBookingWindow
+        - SlotUnavailable
+        - SlotDurationMismatch
+        - SlugAlreadyExists
+    Event:
+      type: object
+      required:
+        - id
+        - ownerId
+        - title
+        - description
+        - durationMinutes
+        - slug
+      properties:
+        id:
+          type: string
+        ownerId:
+          type: string
+        title:
+          $ref: '#/components/schemas/NonEmptyString'
+        description:
+          type: string
+        durationMinutes:
+          $ref: '#/components/schemas/PositiveDurationMinutes'
+        slug:
+          $ref: '#/components/schemas/NonEmptyString'
+      description: Meeting topic created by a user and shared through a public link.
+    EventList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    GuestContact:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          $ref: '#/components/schemas/NonEmptyString'
+        email:
+          $ref: '#/components/schemas/Email'
+      description: Guest contact details captured directly on the booking in the MVP.
+    NonEmptyString:
+      type: string
+      minLength: 1
+    PositiveDurationMinutes:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 1440
+    TimeSlot:
+      type: object
+      required:
+        - startAt
+        - endAt
+        - available
+      properties:
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        available:
+          type: boolean
+      description: Computed available slot for an event in the owner's next 14-day booking window.
+    TimeSlotList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+    UpdateEventRequest:
+      type: object
+      properties:
+        title:
+          $ref: '#/components/schemas/NonEmptyString'
+        description:
+          type: string
+        durationMinutes:
+          $ref: '#/components/schemas/PositiveDurationMinutes'
+        slug:
+          $ref: '#/components/schemas/NonEmptyString'
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - slug
+        - timeZone
+      properties:
+        id:
+          type: string
+        name:
+          $ref: '#/components/schemas/NonEmptyString'
+        slug:
+          $ref: '#/components/schemas/NonEmptyString'
+        timeZone:
+          $ref: '#/components/schemas/NonEmptyString'
+      description: Application user who owns events and receives bookings.
+    UserProfile:
+      type: object
+      required:
+        - user
+        - events
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'

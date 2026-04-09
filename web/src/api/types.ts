@@ -27,7 +27,7 @@ export interface GuestContact {
 export interface TimeSlot {
   startAt: string
   endAt: string
-  available: true
+  available: boolean
 }
 
 export interface Booking {

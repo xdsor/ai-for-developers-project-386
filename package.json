@@ -3,9 +3,12 @@
   "private": true,
   "scripts": {
     "spec:build": "npm --prefix typespec run build:openapi",
+    "spec:sync:backend": "npm run spec:build && mkdir -p backend/src/main/resources/openapi && cp typespec/tsp-output/schema/openapi.yaml backend/src/main/resources/openapi/openapi.yaml",
     "spec:watch": "npm --prefix typespec run watch:openapi",
     "mock": "prism mock typespec/tsp-output/schema/openapi.yaml --host 127.0.0.1 --port 4010 --dynamic",
     "web:dev": "npm --prefix web run dev",
+    "web:dev:backend": "VITE_API_PROXY_TARGET=http://localhost:8080 npm --prefix web run dev",
+    "backend:dev": "npm run spec:sync:backend && ./backend/gradlew -p backend bootRun",
     "web:build": "npm --prefix web run build",
     "dev": "concurrently -k -n spec,mock,web -c yellow,cyan,green \"npm run spec:watch\" \"npm run mock\" \"npm run web:dev\""
   },
