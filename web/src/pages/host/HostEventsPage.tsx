@@ -11,11 +11,11 @@ import {
   Title,
 } from '@mantine/core'
 import { useState } from 'react'
-import { adminDeleteEvent } from '../../api/client'
+import { hostDeleteEvent } from '../../api/client'
 import type { Event } from '../../api/types'
-import { EventFormModal } from '../../components/admin/EventFormModal'
+import { EventFormModal } from '../../components/host/EventFormModal'
 import { appConfig } from '../../config/app'
-import { useAdminEvents } from '../../hooks/admin/useAdminEvents'
+import { useHostEvents } from '../../hooks/host/useHostEvents'
 import {
   showErrorNotification,
   showInfoNotification,
@@ -23,20 +23,20 @@ import {
   useErrorNotification,
 } from '../../lib/notifications'
 
-export function AdminEventsPage() {
+export function HostEventsPage() {
   const [modalOpened, setModalOpened] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | undefined>(undefined)
-  const { events, setEvents, loading, error, reload } = useAdminEvents(appConfig.demoUserId)
+  const { events, setEvents, loading, error, reload } = useHostEvents(appConfig.demoUserId)
 
   useErrorNotification(error, {
-    id: 'admin-events-load-error',
+    id: 'host-events-load-error',
     title: 'Не удалось загрузить события',
   })
 
   const handleDelete = async (eventId: string) => {
     if (!confirm('Удалить событие?')) return
     try {
-      await adminDeleteEvent(appConfig.demoUserId, eventId)
+      await hostDeleteEvent(appConfig.demoUserId, eventId)
       setEvents((prev) => prev.filter((e) => e.id !== eventId))
       showSuccessNotification({
         title: 'Событие удалено',

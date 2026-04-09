@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import { getPublicEvent, listSlots } from '../../api/client'
+import { getGuestEvent, listSlots } from '../../api/client'
 import type { Event, TimeSlot } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
@@ -22,7 +22,7 @@ export function useEventSlots(userSlug?: string, eventSlug?: string) {
 
     dispatch({ type: 'start' })
 
-    Promise.all([getPublicEvent(userSlug, eventSlug), listSlots(userSlug, eventSlug)])
+    Promise.all([getGuestEvent(userSlug, eventSlug), listSlots(userSlug, eventSlug)])
       .then(([event, slotsResponse]) => {
         if (!cancelled) {
           dispatch({

@@ -1,6 +1,6 @@
 import { Alert, Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { adminCreateEvent, adminUpdateEvent } from '../../api/client'
+import { hostCreateEvent, hostUpdateEvent } from '../../api/client'
 import type { CreateEventRequest, Event } from '../../api/types'
 import { showSuccessNotification } from '../../lib/notifications'
 
@@ -53,9 +53,9 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
 
     try {
       if (isEdit) {
-        await adminUpdateEvent(userId, event.id, data)
+        await hostUpdateEvent(userId, event.id, data)
       } else {
-        await adminCreateEvent(userId, data)
+        await hostCreateEvent(userId, data)
       }
       showSuccessNotification({
         title: isEdit ? 'Событие обновлено' : 'Событие создано',

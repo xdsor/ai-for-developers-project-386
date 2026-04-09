@@ -21,7 +21,7 @@ public class UserService {
 		repository.resetDemoData();
 	}
 
-	public Either<DomainError, UserDto> readAdminUser(String userId) {
+	public Either<DomainError, UserDto> readHostUser(String userId) {
 		return findUserById(userId).map(UserDtoMapper::toDto);
 	}
 

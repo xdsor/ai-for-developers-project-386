@@ -10,11 +10,11 @@ import ru.naminutu.backend.mapper.BookingDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
-public class AdminBookingService {
+public class HostBookingService {
 	private final UserService userService;
 	private final MeetingBookingRepository repository;
 
-	public AdminBookingService(UserService userService, MeetingBookingRepository repository) {
+	public HostBookingService(UserService userService, MeetingBookingRepository repository) {
 		this.userService = userService;
 		this.repository = repository;
 	}

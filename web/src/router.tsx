@@ -1,14 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { AdminLayout } from './components/layout/AdminLayout'
-import { AdminBookingsPage } from './pages/admin/AdminBookingsPage'
-import { AdminEventsPage } from './pages/admin/AdminEventsPage'
-import { EventSlotsPage } from './pages/public/EventSlotsPage'
-import { UserProfilePage } from './pages/public/UserProfilePage'
+import { HostLayout } from './components/layout/HostLayout'
+import { HostBookingsPage } from './pages/host/HostBookingsPage'
+import { HostEventsPage } from './pages/host/HostEventsPage'
+import { EventSlotsPage } from './pages/guest/EventSlotsPage'
+import { UserProfilePage } from './pages/guest/UserProfilePage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/admin" replace />,
+    element: <Navigate to="/host" replace />,
   },
   {
     path: '/users/:userSlug',
@@ -19,16 +19,16 @@ export const router = createBrowserRouter([
     element: <EventSlotsPage />,
   },
   {
-    path: '/admin',
-    element: <AdminLayout />,
+    path: '/host',
+    element: <HostLayout />,
     children: [
       {
         index: true,
-        element: <AdminEventsPage />,
+        element: <HostEventsPage />,
       },
       {
         path: 'bookings',
-        element: <AdminBookingsPage />,
+        element: <HostBookingsPage />,
       },
     ],
   },

@@ -39,8 +39,8 @@ class ApiIntegrationTests {
 	}
 
 	@Test
-	void createsAdminEventThroughGeneratedInterfaceImplementation() throws Exception {
-		mockMvc.perform(post("/admin/users/demo-user/events")
+	void createsHostEventThroughGeneratedInterfaceImplementation() throws Exception {
+		mockMvc.perform(post("/host/users/demo-user/events")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
 					{

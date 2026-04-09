@@ -3,15 +3,15 @@ info:
   title: Meeting Booking Service
   version: 0.0.0
 tags:
-  - name: Public Users
-  - name: Public Bookings
-  - name: Admin Users
-  - name: Admin Events
-  - name: Admin Bookings
+  - name: Guest Users
+  - name: Guest Bookings
+  - name: Host Users
+  - name: Host Events
+  - name: Host Bookings
 paths:
-  /admin/users/{userId}:
+  /host/users/{userId}:
     get:
-      operationId: AdminUsers_read
+      operationId: HostUsers_read
       description: Read a user by id.
       parameters:
         - name: userId
@@ -33,10 +33,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Users
-  /admin/users/{userId}/bookings:
+        - Host Users
+  /host/users/{userId}/bookings:
     get:
-      operationId: AdminBookings_list
+      operationId: HostBookings_list
       description: List bookings for a user across all owned events.
       parameters:
         - name: userId
@@ -58,10 +58,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Bookings
-  /admin/users/{userId}/events:
+        - Host Bookings
+  /host/users/{userId}/events:
     get:
-      operationId: AdminEvents_list
+      operationId: HostEvents_list
       description: List events owned by a user.
       parameters:
         - name: userId
@@ -83,9 +83,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Events
+        - Host Events
     post:
-      operationId: AdminEvents_create
+      operationId: HostEvents_create
       description: Create an event owned by a user.
       parameters:
         - name: userId
@@ -107,16 +107,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Events
+        - Host Events
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEventRequest'
-  /admin/users/{userId}/events/{eventId}:
+  /host/users/{userId}/events/{eventId}:
     get:
-      operationId: AdminEvents_read
+      operationId: HostEvents_read
       description: Read an event owned by a user.
       parameters:
         - name: userId
@@ -143,9 +143,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Events
+        - Host Events
     patch:
-      operationId: AdminEvents_update
+      operationId: HostEvents_update
       description: Update an event owned by a user.
       parameters:
         - name: userId
@@ -172,7 +172,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Events
+        - Host Events
       requestBody:
         required: true
         content:
@@ -180,7 +180,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateEventRequest'
     delete:
-      operationId: AdminEvents_delete
+      operationId: HostEvents_delete
       description: Delete an event owned by a user.
       parameters:
         - name: userId
@@ -203,10 +203,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Admin Events
+        - Host Events
   /users/{userSlug}:
     get:
-      operationId: PublicUsers_readProfile
+      operationId: GuestUsers_readProfile
       description: Get a public user profile and all events created by that user.
       parameters:
         - name: userSlug
@@ -228,10 +228,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Public Users
+        - Guest Users
   /users/{userSlug}/events:
     get:
-      operationId: PublicUsers_listEvents
+      operationId: GuestUsers_listEvents
       description: List public events created by a user.
       parameters:
         - name: userSlug
@@ -253,10 +253,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Public Users
+        - Guest Users
   /users/{userSlug}/events/{eventSlug}:
     get:
-      operationId: PublicUsers_readEvent
+      operationId: GuestUsers_readEvent
       description: Get a public event by user slug and event slug.
       parameters:
         - name: userSlug
@@ -283,11 +283,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Public Users
+        - Guest Users
   /users/{userSlug}/events/{eventSlug}/bookings:
     post:
-      operationId: PublicBookings_createBooking
-      description: Create a booking for a free slot in the event owner's 14-day booking window.
+      operationId: GuestBookings_createBooking
+      description: Create a booking for a free slot in the event host's 14-day booking window.
       parameters:
         - name: userSlug
           in: path
@@ -313,7 +313,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Public Bookings
+        - Guest Bookings
       requestBody:
         required: true
         content:
@@ -322,8 +322,8 @@ paths:
               $ref: '#/components/schemas/CreateBookingRequest'
   /users/{userSlug}/events/{eventSlug}/slots:
     get:
-      operationId: PublicBookings_listSlots
-      description: List free slots for the next 14 days from the owner's current date.
+      operationId: GuestBookings_listSlots
+      description: List free slots for the next 14 days from the host's current date.
       parameters:
         - name: userSlug
           in: path
@@ -349,7 +349,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Public Bookings
+        - Guest Bookings
 components:
   schemas:
     Booking:

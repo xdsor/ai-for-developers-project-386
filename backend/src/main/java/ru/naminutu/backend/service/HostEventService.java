@@ -15,11 +15,11 @@ import ru.naminutu.backend.mapper.EventDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
-public class AdminEventService {
+public class HostEventService {
 	private final UserService userService;
 	private final MeetingBookingRepository repository;
 
-	public AdminEventService(UserService userService, MeetingBookingRepository repository) {
+	public HostEventService(UserService userService, MeetingBookingRepository repository) {
 		this.userService = userService;
 		this.repository = repository;
 	}
@@ -38,11 +38,11 @@ public class AdminEventService {
 	}
 
 	public Either<DomainError, EventDto> readEvent(String userId, String eventId) {
-		return findEventForOwner(userId, eventId).map(EventDtoMapper::toDto);
+		return findEventForHost(userId, eventId).map(EventDtoMapper::toDto);
 	}
 
 	public Either<DomainError, EventDto> updateEvent(String userId, String eventId, UpdateEventRequestDto request) {
-		return findEventForOwner(userId, eventId)
+		return findEventForHost(userId, eventId)
 			.flatMap(event -> ensureUniqueSlug(userId, slugOrDefault(request, event), event.id())
 				.map(ignored -> EventRecord.update(event, request))
 				.map(repository::saveEvent)
@@ -50,7 +50,7 @@ public class AdminEventService {
 	}
 
 	public Either<DomainError, Void> deleteEvent(String userId, String eventId) {
-		return findEventForOwner(userId, eventId)
+		return findEventForHost(userId, eventId)
 			.map(event -> {
 				repository.deleteEvent(event.id());
 				repository.deleteBookingsByEventId(event.id());
@@ -58,7 +58,7 @@ public class AdminEventService {
 			});
 	}
 
-	private Either<DomainError, EventRecord> findEventForOwner(String userId, String eventId) {
+	private Either<DomainError, EventRecord> findEventForHost(String userId, String eventId) {
 		return userService.findUserById(userId)
 			.flatMap(ignored -> repository.findEventById(eventId)
 				.filter(event -> event.ownerId().equals(userId))

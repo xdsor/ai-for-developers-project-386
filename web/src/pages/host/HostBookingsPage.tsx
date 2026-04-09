@@ -1,14 +1,14 @@
 import { Alert, Loader, Stack, Title } from '@mantine/core'
-import { BookingsTable } from '../../components/admin/BookingsTable'
+import { BookingsTable } from '../../components/host/BookingsTable'
 import { appConfig } from '../../config/app'
-import { useAdminBookings } from '../../hooks/admin/useAdminBookings'
+import { useHostBookings } from '../../hooks/host/useHostBookings'
 import { useErrorNotification } from '../../lib/notifications'
 
-export function AdminBookingsPage() {
-  const { data, loading, error } = useAdminBookings(appConfig.demoUserId)
+export function HostBookingsPage() {
+  const { data, loading, error } = useHostBookings(appConfig.demoUserId)
 
   useErrorNotification(error, {
-    id: 'admin-bookings-load-error',
+    id: 'host-bookings-load-error',
     title: 'Не удалось загрузить бронирования',
   })
 

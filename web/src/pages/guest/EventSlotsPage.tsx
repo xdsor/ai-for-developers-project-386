@@ -12,10 +12,10 @@ import {
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { Booking, TimeSlot } from '../../api/types'
-import { BookingForm } from '../../components/public/BookingForm'
-import { BookingSuccess } from '../../components/public/BookingSuccess'
-import { SlotPicker } from '../../components/public/SlotPicker'
-import { useEventSlots } from '../../hooks/public/useEventSlots'
+import { BookingForm } from '../../components/guest/BookingForm'
+import { BookingSuccess } from '../../components/guest/BookingSuccess'
+import { SlotPicker } from '../../components/guest/SlotPicker'
+import { useEventSlots } from '../../hooks/guest/useEventSlots'
 import { useErrorNotification } from '../../lib/notifications'
 
 function formatDateTime(isoString: string): string {
@@ -101,7 +101,7 @@ export function EventSlotsPage() {
   const { data, loading, error } = useEventSlots(userSlug, eventSlug)
 
   useErrorNotification(error, {
-    id: 'public-event-slots-load-error',
+    id: 'guest-event-slots-load-error',
     title: 'Не удалось загрузить событие',
   })
 

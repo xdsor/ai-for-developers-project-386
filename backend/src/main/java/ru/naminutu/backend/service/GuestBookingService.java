@@ -23,7 +23,7 @@ import ru.naminutu.backend.mapper.TimeSlotDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
-public class PublicBookingService {
+public class GuestBookingService {
 	private static final List<LocalTime> DAILY_SLOT_STARTS = List.of(
 		LocalTime.of(9, 0),
 		LocalTime.of(13, 0),
@@ -31,29 +31,29 @@ public class PublicBookingService {
 	);
 
 	private final UserService userService;
-	private final PublicEventService publicEventService;
+	private final GuestEventService guestEventService;
 	private final MeetingBookingRepository repository;
 
-	public PublicBookingService(
+	public GuestBookingService(
 		UserService userService,
-		PublicEventService publicEventService,
+		GuestEventService guestEventService,
 		MeetingBookingRepository repository
 	) {
 		this.userService = userService;
-		this.publicEventService = publicEventService;
+		this.guestEventService = guestEventService;
 		this.repository = repository;
 	}
 
 	public Either<DomainError, TimeSlotListDto> listSlots(String userSlug, String eventSlug) {
 		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> publicEventService.findEventBySlug(user.id(), eventSlug)
+			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
 				.map(event -> computeAvailableSlots(user, event)))
 			.map(TimeSlotDtoMapper::toListDto);
 	}
 
 	public Either<DomainError, BookingDto> createBooking(String userSlug, String eventSlug, CreateBookingRequestDto request) {
 		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> publicEventService.findEventBySlug(user.id(), eventSlug)
+			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
 				.flatMap(event -> validateBookingRequest(user, event, request)
 					.map(slot -> BookingRecord.create(event, request, slot))
 					.map(repository::saveBooking)

@@ -1,9 +1,9 @@
 import { useEffect, useReducer, useState } from 'react'
-import { adminListEvents } from '../../api/client'
+import { hostListEvents } from '../../api/client'
 import type { Event } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
-export function useAdminEvents(userId: string) {
+export function useHostEvents(userId: string) {
   const [state, dispatch] = useReducer(asyncStateReducer<Event[]>, undefined, () =>
     createAsyncState<Event[]>(),
   )
@@ -14,7 +14,7 @@ export function useAdminEvents(userId: string) {
 
     dispatch({ type: 'start' })
 
-    adminListEvents(userId)
+    hostListEvents(userId)
       .then((response) => {
         if (!cancelled) {
           dispatch({ type: 'success', data: response.items })

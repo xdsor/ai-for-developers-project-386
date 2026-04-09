@@ -1,7 +1,7 @@
 import { Alert, Avatar, Badge, Container, Loader, Stack, Text, Title } from '@mantine/core'
 import { useParams } from 'react-router-dom'
-import { EventCard } from '../../components/public/EventCard'
-import { useUserProfile } from '../../hooks/public/useUserProfile'
+import { EventCard } from '../../components/guest/EventCard'
+import { useUserProfile } from '../../hooks/guest/useUserProfile'
 import { useErrorNotification } from '../../lib/notifications'
 
 export function UserProfilePage() {
@@ -9,7 +9,7 @@ export function UserProfilePage() {
   const { data: profile, loading, error } = useUserProfile(userSlug)
 
   useErrorNotification(error, {
-    id: 'public-user-profile-load-error',
+    id: 'guest-user-profile-load-error',
     title: 'Не удалось загрузить профиль',
   })
 

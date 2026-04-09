@@ -3,8 +3,8 @@ using Http;
 namespace MeetingBooking;
 
 @route("/users")
-@tag("Public Users")
-interface PublicUsers {
+@tag("Guest Users")
+interface GuestUsers {
   /** Get a public user profile and all events created by that user. */
   @get
   @route("{userSlug}")
@@ -22,14 +22,14 @@ interface PublicUsers {
 }
 
 @route("/users/{userSlug}/events/{eventSlug}")
-@tag("Public Bookings")
-interface PublicBookings {
-  /** List free slots for the next 14 days from the owner's current date. */
+@tag("Guest Bookings")
+interface GuestBookings {
+  /** List free slots for the next 14 days from the host's current date. */
   @get
   @route("slots")
   listSlots(@path userSlug: Slug, @path eventSlug: Slug): TimeSlotList | Error;
 
-  /** Create a booking for a free slot in the event owner's 14-day booking window. */
+  /** Create a booking for a free slot in the event host's 14-day booking window. */
   @post
   @route("bookings")
   createBooking(
@@ -39,18 +39,18 @@ interface PublicBookings {
   ): Booking | Error;
 }
 
-@route("/admin/users")
-@tag("Admin Users")
-interface AdminUsers {
+@route("/host/users")
+@tag("Host Users")
+interface HostUsers {
   /** Read a user by id. */
   @get
   @route("{userId}")
   read(@path userId: ResourceId): User | Error;
 }
 
-@route("/admin/users/{userId}/events")
-@tag("Admin Events")
-interface AdminEvents {
+@route("/host/users/{userId}/events")
+@tag("Host Events")
+interface HostEvents {
   /** List events owned by a user. */
   @get
   list(@path userId: ResourceId): EventList | Error;
@@ -79,9 +79,9 @@ interface AdminEvents {
   delete(@path userId: ResourceId, @path eventId: ResourceId): void | Error;
 }
 
-@route("/admin/users/{userId}/bookings")
-@tag("Admin Bookings")
-interface AdminBookings {
+@route("/host/users/{userId}/bookings")
+@tag("Host Bookings")
+interface HostBookings {
   /** List bookings for a user across all owned events. */
   @get
   list(@path userId: ResourceId): BookingList | Error;

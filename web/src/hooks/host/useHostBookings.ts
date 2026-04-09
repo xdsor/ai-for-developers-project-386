@@ -1,16 +1,16 @@
 import { useEffect, useReducer } from 'react'
-import { adminListBookings, adminListEvents } from '../../api/client'
+import { hostListBookings, hostListEvents } from '../../api/client'
 import type { Booking } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
-interface AdminBookingsData {
+interface HostBookingsData {
   bookings: Booking[]
   eventsById: Record<string, string>
 }
 
-export function useAdminBookings(userId: string) {
-  const [state, dispatch] = useReducer(asyncStateReducer<AdminBookingsData>, undefined, () =>
-    createAsyncState<AdminBookingsData>(),
+export function useHostBookings(userId: string) {
+  const [state, dispatch] = useReducer(asyncStateReducer<HostBookingsData>, undefined, () =>
+    createAsyncState<HostBookingsData>(),
   )
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function useAdminBookings(userId: string) {
 
     dispatch({ type: 'start' })
 
-    Promise.all([adminListBookings(userId), adminListEvents(userId)])
+    Promise.all([hostListBookings(userId), hostListEvents(userId)])
       .then(([bookingsResponse, eventsResponse]) => {
         if (cancelled) {
           return

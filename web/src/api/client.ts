@@ -47,17 +47,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return payload as T
 }
 
-// Public
+// Guest
 
 export function getProfile(userSlug: string): Promise<UserProfile> {
   return request<UserProfile>(`/users/${userSlug}`)
 }
 
-export function listPublicEvents(userSlug: string): Promise<EventList> {
+export function listGuestEvents(userSlug: string): Promise<EventList> {
   return request<EventList>(`/users/${userSlug}/events`)
 }
 
-export function getPublicEvent(userSlug: string, eventSlug: string): Promise<Event> {
+export function getGuestEvent(userSlug: string, eventSlug: string): Promise<Event> {
   return request<Event>(`/users/${userSlug}/events/${eventSlug}`)
 }
 
@@ -76,42 +76,42 @@ export function createBooking(
   })
 }
 
-// Admin
+// Host
 
-export function adminGetUser(userId: string): Promise<User> {
-  return request<User>(`/admin/users/${userId}`)
+export function hostGetUser(userId: string): Promise<User> {
+  return request<User>(`/host/users/${userId}`)
 }
 
-export function adminListEvents(userId: string): Promise<EventList> {
-  return request<EventList>(`/admin/users/${userId}/events`)
+export function hostListEvents(userId: string): Promise<EventList> {
+  return request<EventList>(`/host/users/${userId}/events`)
 }
 
-export function adminCreateEvent(userId: string, data: CreateEventRequest): Promise<Event> {
-  return request<Event>(`/admin/users/${userId}/events`, {
+export function hostCreateEvent(userId: string, data: CreateEventRequest): Promise<Event> {
+  return request<Event>(`/host/users/${userId}/events`, {
     method: 'POST',
     body: JSON.stringify(data),
   })
 }
 
-export function adminGetEvent(userId: string, eventId: string): Promise<Event> {
-  return request<Event>(`/admin/users/${userId}/events/${eventId}`)
+export function hostGetEvent(userId: string, eventId: string): Promise<Event> {
+  return request<Event>(`/host/users/${userId}/events/${eventId}`)
 }
 
-export function adminUpdateEvent(
+export function hostUpdateEvent(
   userId: string,
   eventId: string,
   data: UpdateEventRequest,
 ): Promise<Event> {
-  return request<Event>(`/admin/users/${userId}/events/${eventId}`, {
+  return request<Event>(`/host/users/${userId}/events/${eventId}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   })
 }
 
-export function adminDeleteEvent(userId: string, eventId: string): Promise<void> {
-  return request<void>(`/admin/users/${userId}/events/${eventId}`, { method: 'DELETE' })
+export function hostDeleteEvent(userId: string, eventId: string): Promise<void> {
+  return request<void>(`/host/users/${userId}/events/${eventId}`, { method: 'DELETE' })
 }
 
-export function adminListBookings(userId: string): Promise<BookingList> {
-  return request<BookingList>(`/admin/users/${userId}/bookings`)
+export function hostListBookings(userId: string): Promise<BookingList> {
+  return request<BookingList>(`/host/users/${userId}/bookings`)
 }
