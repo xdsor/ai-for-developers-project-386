@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
+import { Alert, Button, Group, Modal, NumberInput, Stack, Text, TextInput, Textarea } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { hostCreateEvent, hostUpdateEvent } from '../../api/client'
 import type { CreateEventRequest, Event } from '../../api/types'
@@ -21,12 +21,23 @@ function getInitialValues(event?: Event) {
   }
 }
 
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export function EventFormModal({ opened, onClose, onSaved, userId, event }: EventFormModalProps) {
   const isEdit = !!event
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [durationMinutes, setDurationMinutes] = useState<number>(30)
   const [slug, setSlug] = useState('')
+  const [slugEdited, setSlugEdited] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,9 +51,22 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
     setDescription(initialValues.description)
     setDurationMinutes(initialValues.durationMinutes)
     setSlug(initialValues.slug)
+    setSlugEdited(isEdit)
     setLoading(false)
     setError(null)
-  }, [event, opened])
+  }, [event, opened, isEdit])
+
+  function handleTitleChange(value: string) {
+    setTitle(value)
+    if (!slugEdited) {
+      setSlug(titleToSlug(value))
+    }
+  }
+
+  function handleSlugChange(value: string) {
+    setSlug(value)
+    setSlugEdited(value !== titleToSlug(title))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,7 +113,7 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
             label="Название"
             required
             value={title}
-            onChange={(e) => setTitle(e.currentTarget.value)}
+            onChange={(e) => handleTitleChange(e.currentTarget.value)}
           />
           <Textarea
             label="Описание"
@@ -110,8 +134,13 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
             label="Slug (публичный идентификатор)"
             required
             value={slug}
-            onChange={(e) => setSlug(e.currentTarget.value)}
+            onChange={(e) => handleSlugChange(e.currentTarget.value)}
             placeholder="my-event"
+            description={
+              !isEdit && !slugEdited ? (
+                <Text size="xs" c="dimmed">Генерируется автоматически из названия</Text>
+              ) : undefined
+            }
           />
           <Group justify="flex-end" mt="sm">
             <Button variant="subtle" color="gray" onClick={onClose} disabled={loading}>

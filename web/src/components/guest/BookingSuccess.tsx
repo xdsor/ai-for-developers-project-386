@@ -3,6 +3,7 @@ import type { Booking } from '../../api/types'
 
 interface BookingSuccessProps {
   booking: Booking
+  hostName: string
 }
 
 function formatDateTime(isoString: string): string {
@@ -15,7 +16,7 @@ function formatDateTime(isoString: string): string {
   })
 }
 
-export function BookingSuccess({ booking }: BookingSuccessProps) {
+export function BookingSuccess({ booking, hostName }: BookingSuccessProps) {
   return (
     <Alert color="teal" title="Встреча забронирована!">
       <Stack gap="xs">
@@ -24,6 +25,9 @@ export function BookingSuccess({ booking }: BookingSuccessProps) {
         </Text>
         <Text size="sm">
           <strong>Конец:</strong> {formatDateTime(booking.endAt)}
+        </Text>
+        <Text size="sm">
+          <strong>Хост:</strong> {hostName}
         </Text>
         <Text size="sm">
           <strong>Гость:</strong> {booking.guest.name} ({booking.guest.email})
