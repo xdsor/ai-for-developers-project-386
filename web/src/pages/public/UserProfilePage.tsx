@@ -1,39 +1,11 @@
 import { Alert, Avatar, Badge, Container, Loader, Stack, Text, Title } from '@mantine/core'
-import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getProfile } from '../../api/client'
-import type { UserProfile } from '../../api/types'
 import { EventCard } from '../../components/public/EventCard'
+import { useUserProfile } from '../../hooks/public/useUserProfile'
 
 export function UserProfilePage() {
   const { userSlug } = useParams<{ userSlug: string }>()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!userSlug) return
-    let cancelled = false
-
-    setLoading(true)
-    setError(null)
-
-    getProfile(userSlug)
-      .then((data) => {
-        if (!cancelled) setProfile(data)
-      })
-      .catch((err: unknown) => {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Не удалось загрузить профиль.')
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [userSlug])
+  const { data: profile, loading, error } = useUserProfile(userSlug)
 
   if (loading) {
     return (

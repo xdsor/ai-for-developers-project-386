@@ -10,49 +10,22 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { useEffect, useState } from 'react'
-import { adminDeleteEvent, adminListEvents, getProfile } from '../../api/client'
+import { useState } from 'react'
+import { adminDeleteEvent } from '../../api/client'
 import type { Event } from '../../api/types'
 import { EventFormModal } from '../../components/admin/EventFormModal'
-
-const DEMO_SLUG = 'demo-user'
+import { appConfig } from '../../config/app'
+import { useAdminEvents } from '../../hooks/admin/useAdminEvents'
 
 export function AdminEventsPage() {
-  const [userId, setUserId] = useState<string | null>(null)
-  const [userSlug, setUserSlug] = useState<string | null>(null)
-  const [events, setEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [modalOpened, setModalOpened] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | undefined>(undefined)
-
-  const loadData = () => {
-    setLoading(true)
-    setError(null)
-
-    getProfile(DEMO_SLUG)
-      .then((profile) => {
-        const uid = profile.user.id
-        setUserId(uid)
-        setUserSlug(profile.user.slug)
-        return adminListEvents(uid)
-      })
-      .then((data) => setEvents(data.items))
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : 'Не удалось загрузить события.')
-      })
-      .finally(() => setLoading(false))
-  }
-
-  useEffect(() => {
-    loadData()
-  }, [])
+  const { events, setEvents, loading, error, reload } = useAdminEvents(appConfig.demoUserId)
 
   const handleDelete = async (eventId: string) => {
-    if (!userId) return
     if (!confirm('Удалить событие?')) return
     try {
-      await adminDeleteEvent(userId, eventId)
+      await adminDeleteEvent(appConfig.demoUserId, eventId)
       setEvents((prev) => prev.filter((e) => e.id !== eventId))
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Ошибка удаления.')
@@ -128,7 +101,7 @@ export function AdminEventsPage() {
                           variant="light"
                           color="teal"
                           onClick={() => {
-                            const url = `${window.location.origin}/users/${userSlug}/events/${event.slug}`
+                            const url = `${window.location.origin}/users/${appConfig.demoUserSlug}/events/${event.slug}`
                             void navigator.clipboard.writeText(url)
                           }}
                           title="Поделиться ссылкой"
@@ -161,15 +134,13 @@ export function AdminEventsPage() {
         </>
       )}
 
-      {userId && (
-        <EventFormModal
-          opened={modalOpened}
-          onClose={() => setModalOpened(false)}
-          onSaved={loadData}
-          userId={userId}
-          event={editingEvent}
-        />
-      )}
+      <EventFormModal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        onSaved={reload}
+        userId={appConfig.demoUserId}
+        event={editingEvent}
+      />
     </Stack>
   )
 }

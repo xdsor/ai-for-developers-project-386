@@ -1,5 +1,6 @@
 import { AppShell, Button, Group, Title } from '@mantine/core'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { appConfig } from '../../config/app'
 
 export function AdminLayout() {
   const navigate = useNavigate()
@@ -35,7 +36,7 @@ export function AdminLayout() {
               variant="subtle"
               color="teal"
               size="sm"
-              onClick={() => navigate('/users/demo-user')}
+              onClick={() => navigate(`/users/${appConfig.demoUserSlug}`)}
             >
               Публичный сайт
             </Button>

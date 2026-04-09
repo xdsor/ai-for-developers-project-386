@@ -11,21 +11,36 @@ import type {
   User,
   UserProfile,
 } from './types'
+import { appConfig } from '../config/app'
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '/api'
+async function parseResponse(response: Response): Promise<unknown> {
+  const text = await response.text()
+
+  if (!text) {
+    return null
+  }
+
+  try {
+    return JSON.parse(text) as unknown
+  } catch {
+    return text
+  }
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${baseUrl}${path}`, {
+  const response = await fetch(`${appConfig.apiBaseUrl}${path}`, {
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     ...init,
   })
 
-  const payload = (await response.json()) as T | ApiError
+  const payload = (await parseResponse(response)) as T | ApiError | string | null
 
   if (!response.ok) {
-    const err = payload as ApiError
-    const error = new Error(err.message ?? 'Request failed')
-    ;(error as Error & { code?: string }).code = err.code
+    const err = typeof payload === 'object' && payload ? (payload as ApiError) : null
+    const error = new Error(
+      typeof payload === 'string' ? payload : err?.message ?? 'Request failed',
+    )
+    ;(error as Error & { code?: string }).code = err?.code
     throw error
   }
 

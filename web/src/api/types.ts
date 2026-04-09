@@ -74,13 +74,15 @@ export interface UpdateEventRequest {
 export interface CreateBookingRequest {
   guest: GuestContact
   startAt: string
-  endAt: string
 }
 
 export type ErrorCode =
+  | 'NotFound'
+  | 'ValidationFailed'
   | 'SlotUnavailable'
   | 'SlotOutsideBookingWindow'
   | 'SlotDurationMismatch'
+  | 'SlugAlreadyExists'
 
 export interface ApiError {
   message: string

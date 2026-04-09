@@ -25,7 +25,6 @@ export function BookingForm({ userSlug, eventSlug, slot, onSuccess }: BookingFor
       const booking = await createBooking(userSlug, eventSlug, {
         guest: { name, email },
         startAt: slot.startAt,
-        endAt: slot.endAt,
       })
       onSuccess(booking)
     } catch (err) {

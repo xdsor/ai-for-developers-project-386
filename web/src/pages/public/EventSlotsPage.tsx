@@ -9,13 +9,13 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getPublicEvent, listSlots } from '../../api/client'
-import type { Booking, Event, TimeSlot } from '../../api/types'
+import type { Booking, TimeSlot } from '../../api/types'
 import { BookingForm } from '../../components/public/BookingForm'
 import { BookingSuccess } from '../../components/public/BookingSuccess'
 import { SlotPicker } from '../../components/public/SlotPicker'
+import { useEventSlots } from '../../hooks/public/useEventSlots'
 
 function formatDateTime(isoString: string): string {
   return new Date(isoString).toLocaleString('ru-RU', {
@@ -27,61 +27,16 @@ function formatDateTime(isoString: string): string {
   })
 }
 
-export function EventSlotsPage() {
-  const { userSlug, eventSlug } = useParams<{ userSlug: string; eventSlug: string }>()
-  const [event, setEvent] = useState<Event | null>(null)
-  const [slots, setSlots] = useState<TimeSlot[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+interface EventSlotsContentProps {
+  userSlug: string
+  eventSlug: string
+  event: NonNullable<ReturnType<typeof useEventSlots>['data']>['event']
+  slots: NonNullable<ReturnType<typeof useEventSlots>['data']>['slots']
+}
+
+function EventSlotsContent({ userSlug, eventSlug, event, slots }: EventSlotsContentProps) {
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const [booking, setBooking] = useState<Booking | null>(null)
-
-  useEffect(() => {
-    if (!userSlug || !eventSlug) return
-    let cancelled = false
-
-    setLoading(true)
-    setError(null)
-    setSelectedSlot(null)
-    setBooking(null)
-
-    Promise.all([getPublicEvent(userSlug, eventSlug), listSlots(userSlug, eventSlug)])
-      .then(([eventData, slotsData]) => {
-        if (!cancelled) {
-          setEvent(eventData)
-          setSlots(slotsData.items)
-        }
-      })
-      .catch((err: unknown) => {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Не удалось загрузить данные.')
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [userSlug, eventSlug])
-
-  if (loading) {
-    return (
-      <Container size="sm" py={64} ta="center">
-        <Loader color="teal" />
-      </Container>
-    )
-  }
-
-  if (error || !event) {
-    return (
-      <Container size="sm" py={48}>
-        <Alert color="red" title="Ошибка">
-          {error ?? 'Событие не найдено.'}
-        </Alert>
-      </Container>
-    )
-  }
 
   return (
     <Container size="sm" py={48}>
@@ -125,8 +80,8 @@ export function EventSlotsPage() {
                   </Text>
                   <Divider />
                   <BookingForm
-                    userSlug={userSlug!}
-                    eventSlug={eventSlug!}
+                    userSlug={userSlug}
+                    eventSlug={eventSlug}
                     slot={selectedSlot}
                     onSuccess={(b) => setBooking(b)}
                   />
@@ -137,5 +92,38 @@ export function EventSlotsPage() {
         )}
       </Stack>
     </Container>
+  )
+}
+
+export function EventSlotsPage() {
+  const { userSlug, eventSlug } = useParams<{ userSlug: string; eventSlug: string }>()
+  const { data, loading, error } = useEventSlots(userSlug, eventSlug)
+
+  if (loading) {
+    return (
+      <Container size="sm" py={64} ta="center">
+        <Loader color="teal" />
+      </Container>
+    )
+  }
+
+  if (error || !data || !userSlug || !eventSlug) {
+    return (
+      <Container size="sm" py={48}>
+        <Alert color="red" title="Ошибка">
+          {error ?? 'Событие не найдено.'}
+        </Alert>
+      </Container>
+    )
+  }
+
+  return (
+    <EventSlotsContent
+      key={`${userSlug}:${eventSlug}`}
+      userSlug={userSlug}
+      eventSlug={eventSlug}
+      event={data.event}
+      slots={data.slots}
+    />
   )
 }

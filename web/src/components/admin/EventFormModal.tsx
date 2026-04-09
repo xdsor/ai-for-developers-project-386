@@ -1,5 +1,5 @@
 import { Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { adminCreateEvent, adminUpdateEvent } from '../../api/client'
 import type { CreateEventRequest, Event } from '../../api/types'
 
@@ -11,14 +11,37 @@ interface EventFormModalProps {
   event?: Event
 }
 
+function getInitialValues(event?: Event) {
+  return {
+    title: event?.title ?? '',
+    description: event?.description ?? '',
+    durationMinutes: event?.durationMinutes ?? 30,
+    slug: event?.slug ?? '',
+  }
+}
+
 export function EventFormModal({ opened, onClose, onSaved, userId, event }: EventFormModalProps) {
   const isEdit = !!event
-  const [title, setTitle] = useState(event?.title ?? '')
-  const [description, setDescription] = useState(event?.description ?? '')
-  const [durationMinutes, setDurationMinutes] = useState<number>(event?.durationMinutes ?? 30)
-  const [slug, setSlug] = useState(event?.slug ?? '')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [durationMinutes, setDurationMinutes] = useState<number>(30)
+  const [slug, setSlug] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!opened) {
+      return
+    }
+
+    const initialValues = getInitialValues(event)
+    setTitle(initialValues.title)
+    setDescription(initialValues.description)
+    setDurationMinutes(initialValues.durationMinutes)
+    setSlug(initialValues.slug)
+    setLoading(false)
+    setError(null)
+  }, [event, opened])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
