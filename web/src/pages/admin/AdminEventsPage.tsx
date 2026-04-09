@@ -16,19 +16,37 @@ import type { Event } from '../../api/types'
 import { EventFormModal } from '../../components/admin/EventFormModal'
 import { appConfig } from '../../config/app'
 import { useAdminEvents } from '../../hooks/admin/useAdminEvents'
+import {
+  showErrorNotification,
+  showInfoNotification,
+  showSuccessNotification,
+  useErrorNotification,
+} from '../../lib/notifications'
 
 export function AdminEventsPage() {
   const [modalOpened, setModalOpened] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | undefined>(undefined)
   const { events, setEvents, loading, error, reload } = useAdminEvents(appConfig.demoUserId)
 
+  useErrorNotification(error, {
+    id: 'admin-events-load-error',
+    title: 'Не удалось загрузить события',
+  })
+
   const handleDelete = async (eventId: string) => {
     if (!confirm('Удалить событие?')) return
     try {
       await adminDeleteEvent(appConfig.demoUserId, eventId)
       setEvents((prev) => prev.filter((e) => e.id !== eventId))
+      showSuccessNotification({
+        title: 'Событие удалено',
+        message: 'Список событий обновлён.',
+      })
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Ошибка удаления.')
+      showErrorNotification({
+        title: 'Не удалось удалить событие',
+        message: err instanceof Error ? err.message : 'Ошибка удаления.',
+      })
     }
   }
 
@@ -102,7 +120,20 @@ export function AdminEventsPage() {
                           color="teal"
                           onClick={() => {
                             const url = `${window.location.origin}/users/${appConfig.demoUserSlug}/events/${event.slug}`
-                            void navigator.clipboard.writeText(url)
+                            void navigator.clipboard
+                              .writeText(url)
+                              .then(() => {
+                                showInfoNotification({
+                                  title: 'Ссылка скопирована',
+                                  message: 'Публичная ссылка сохранена в буфере обмена.',
+                                })
+                              })
+                              .catch(() => {
+                                showErrorNotification({
+                                  title: 'Не удалось скопировать ссылку',
+                                  message: 'Попробуйте ещё раз.',
+                                })
+                              })
                           }}
                           title="Поделиться ссылкой"
                         >

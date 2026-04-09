@@ -16,6 +16,7 @@ import { BookingForm } from '../../components/public/BookingForm'
 import { BookingSuccess } from '../../components/public/BookingSuccess'
 import { SlotPicker } from '../../components/public/SlotPicker'
 import { useEventSlots } from '../../hooks/public/useEventSlots'
+import { useErrorNotification } from '../../lib/notifications'
 
 function formatDateTime(isoString: string): string {
   return new Date(isoString).toLocaleString('ru-RU', {
@@ -98,6 +99,11 @@ function EventSlotsContent({ userSlug, eventSlug, event, slots }: EventSlotsCont
 export function EventSlotsPage() {
   const { userSlug, eventSlug } = useParams<{ userSlug: string; eventSlug: string }>()
   const { data, loading, error } = useEventSlots(userSlug, eventSlug)
+
+  useErrorNotification(error, {
+    id: 'public-event-slots-load-error',
+    title: 'Не удалось загрузить событие',
+  })
 
   if (loading) {
     return (

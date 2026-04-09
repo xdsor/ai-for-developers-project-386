@@ -1,7 +1,8 @@
-import { Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
+import { Alert, Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { adminCreateEvent, adminUpdateEvent } from '../../api/client'
 import type { CreateEventRequest, Event } from '../../api/types'
+import { showSuccessNotification } from '../../lib/notifications'
 
 interface EventFormModalProps {
   opened: boolean
@@ -56,6 +57,12 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
       } else {
         await adminCreateEvent(userId, data)
       }
+      showSuccessNotification({
+        title: isEdit ? 'Событие обновлено' : 'Событие создано',
+        message: isEdit
+          ? 'Изменения сохранены.'
+          : 'Новое событие доступно в списке.',
+      })
       onSaved()
       onClose()
     } catch (err) {
@@ -73,7 +80,11 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
     >
       <form onSubmit={(e) => { void handleSubmit(e) }}>
         <Stack gap="sm">
-          {error && <p style={{ color: 'red', margin: 0, fontSize: 14 }}>{error}</p>}
+          {error && (
+            <Alert color="red" title="Ошибка">
+              {error}
+            </Alert>
+          )}
           <TextInput
             label="Название"
             required

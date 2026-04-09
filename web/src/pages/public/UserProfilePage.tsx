@@ -2,10 +2,16 @@ import { Alert, Avatar, Badge, Container, Loader, Stack, Text, Title } from '@ma
 import { useParams } from 'react-router-dom'
 import { EventCard } from '../../components/public/EventCard'
 import { useUserProfile } from '../../hooks/public/useUserProfile'
+import { useErrorNotification } from '../../lib/notifications'
 
 export function UserProfilePage() {
   const { userSlug } = useParams<{ userSlug: string }>()
   const { data: profile, loading, error } = useUserProfile(userSlug)
+
+  useErrorNotification(error, {
+    id: 'public-user-profile-load-error',
+    title: 'Не удалось загрузить профиль',
+  })
 
   if (loading) {
     return (

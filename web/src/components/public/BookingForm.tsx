@@ -2,6 +2,7 @@ import { Alert, Button, Stack, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { createBooking } from '../../api/client'
 import type { Booking, TimeSlot } from '../../api/types'
+import { showSuccessNotification } from '../../lib/notifications'
 
 interface BookingFormProps {
   userSlug: string
@@ -25,6 +26,10 @@ export function BookingForm({ userSlug, eventSlug, slot, onSuccess }: BookingFor
       const booking = await createBooking(userSlug, eventSlug, {
         guest: { name, email },
         startAt: slot.startAt,
+      })
+      showSuccessNotification({
+        title: 'Бронирование создано',
+        message: 'Подтверждение встречи готово.',
       })
       onSuccess(booking)
     } catch (err) {
