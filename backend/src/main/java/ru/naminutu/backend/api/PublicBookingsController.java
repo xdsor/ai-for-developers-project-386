@@ -6,14 +6,14 @@ import ru.naminutu.backend.generated.api.PublicBookingsApi;
 import ru.naminutu.backend.generated.model.BookingDto;
 import ru.naminutu.backend.generated.model.CreateBookingRequestDto;
 import ru.naminutu.backend.generated.model.TimeSlotListDto;
-import ru.naminutu.backend.service.MeetingBookingService;
+import ru.naminutu.backend.service.PublicBookingService;
 
 @RestController
 public class PublicBookingsController implements PublicBookingsApi {
-	private final MeetingBookingService service;
+	private final PublicBookingService publicBookingService;
 
-	public PublicBookingsController(MeetingBookingService service) {
-		this.service = service;
+	public PublicBookingsController(PublicBookingService publicBookingService) {
+		this.publicBookingService = publicBookingService;
 	}
 
 	@Override
@@ -22,11 +22,11 @@ public class PublicBookingsController implements PublicBookingsApi {
 		String eventSlug,
 		CreateBookingRequestDto createBookingRequestDto
 	) {
-		return ApiResponseMapper.ok(service.createBooking(userSlug, eventSlug, createBookingRequestDto));
+		return ApiResponseMapper.ok(publicBookingService.createBooking(userSlug, eventSlug, createBookingRequestDto));
 	}
 
 	@Override
 	public ResponseEntity<TimeSlotListDto> publicBookingsListSlots(String userSlug, String eventSlug) {
-		return ApiResponseMapper.ok(service.listSlots(userSlug, eventSlug));
+		return ApiResponseMapper.ok(publicBookingService.listSlots(userSlug, eventSlug));
 	}
 }

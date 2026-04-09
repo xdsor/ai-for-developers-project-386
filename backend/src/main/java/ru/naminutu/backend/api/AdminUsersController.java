@@ -4,18 +4,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.naminutu.backend.generated.api.AdminUsersApi;
 import ru.naminutu.backend.generated.model.UserDto;
-import ru.naminutu.backend.service.MeetingBookingService;
+import ru.naminutu.backend.service.UserService;
 
 @RestController
 public class AdminUsersController implements AdminUsersApi {
-	private final MeetingBookingService service;
+	private final UserService userService;
 
-	public AdminUsersController(MeetingBookingService service) {
-		this.service = service;
+	public AdminUsersController(UserService userService) {
+		this.userService = userService;
 	}
 
 	@Override
 	public ResponseEntity<UserDto> adminUsersRead(String userId) {
-		return ApiResponseMapper.ok(service.readAdminUser(userId));
+		return ApiResponseMapper.ok(userService.readAdminUser(userId));
 	}
 }

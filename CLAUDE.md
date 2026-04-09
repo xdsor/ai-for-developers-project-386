@@ -2,16 +2,28 @@
 
 ## Project Structure & Module Organization
 
-This repository is split into two packages:
+This repository is split into three packages:
 
-- `typespec/` defines the API contract in `main.tsp`, `models.tsp`, and `operations.tsp`. Generated OpenAPI output is written to `typespec/tsp-output/schema/openapi.yaml`.
+- `typespec/` defines the API contract in `main.tsp`, `models.tsp`, and `operations.tsp`. TypeSpec emits `typespec/tsp-output/schema/openapi.yaml`, which is then synced into `backend/src/main/resources/openapi/openapi.yaml`.
+- `backend/` contains the Spring Boot application. Generated OpenAPI Java classes are written to `backend/build/generated/openapi/src/main/java`, while handwritten application code stays in `backend/src/main/java`.
 - `web/` contains the React + Vite frontend. App code lives in `web/src/` and is organized by feature: `pages/`, `components/`, `hooks/`, `api/`, and `config/`.
 
-Keep contract changes in `typespec/` first, then sync `web/src/api/types.ts`, `web/src/api/client.ts`, and any affected UI.
+Keep contract changes in `typespec/` first, then sync the backend OpenAPI copy, regenerate backend classes, and update `web/src/api/types.ts`, `web/src/api/client.ts`, and any affected UI.
+
+## Backend Code Style
+
+For handwritten backend code in `backend/src/main/java`:
+
+- Prefer a functional style with small pure functions and explicit inputs/outputs.
+- Use `vavr` for control flow and expected error handling: prefer `Either`, `Option`, and `Try` over exceptions for ordinary business flows.
+- Model branch-heavy business outcomes with sealed classes where that makes the flow clearer.
+- Keep exceptions for framework boundaries and truly unexpected failures, not for normal `not found` / `validation` / `conflict` cases.
+- Avoid scattering object construction with `new` through business logic. Prefer static factories, constructor-like functions, and mapper classes/functions.
+- Keep generated OpenAPI DTOs as transport models. Build and map them in dedicated mappers/factories instead of directly inside orchestration logic when possible.
 
 ## Build, Test, and Development Commands
 
-Install dependencies at the root, then in each package:
+Install dependencies at the root, then in each JavaScript package:
 
 ```bash
 npm install
@@ -21,11 +33,16 @@ cd ../web && npm install
 
 Key commands:
 
-- `npm run dev` starts the full local stack: TypeSpec watch, Prism mock server on `127.0.0.1:4010`, and the Vite dev server.
+- `make spec` rebuilds the TypeSpec contract and syncs `backend/src/main/resources/openapi/openapi.yaml`.
+- `make web-dev` starts the web-only mock flow: TypeSpec watch, Prism on `127.0.0.1:4010`, and the Vite dev server.
+- `make backend` syncs the OpenAPI file, generates Java classes, and runs Spring Boot.
+- `make dev` starts the full application: Spring Boot backend plus the frontend proxied to `http://localhost:8080`.
 - `npm run spec:build` compiles the TypeSpec contract once.
+- `npm run spec:sync:backend` compiles the TypeSpec contract and copies the resulting OpenAPI file into backend resources.
 - `npm run spec:watch` recompiles the contract on changes.
 - `npm run mock` serves the generated OpenAPI schema through Prism.
 - `npm run web:dev` runs only the frontend.
+- `npm run web:dev:backend` runs the frontend with the API proxy pointed at the Spring Boot backend.
+- `./backend/gradlew -p backend test` runs backend tests, including code generation and API integration tests.
 - `npm run web:build` creates the production frontend build.
 - `npm --prefix web run lint` runs ESLint for the frontend.
-

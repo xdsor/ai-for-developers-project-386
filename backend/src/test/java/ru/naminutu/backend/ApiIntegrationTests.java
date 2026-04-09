@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.naminutu.backend.service.MeetingBookingService;
+import ru.naminutu.backend.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,11 +23,11 @@ class ApiIntegrationTests {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private MeetingBookingService service;
+	private UserService userService;
 
 	@BeforeEach
 	void resetState() {
-		service.resetDemoData();
+		userService.resetDemoData();
 	}
 
 	@Test
