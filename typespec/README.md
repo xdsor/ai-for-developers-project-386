@@ -73,7 +73,6 @@
 
 - `startAt: utcDateTime` - начало слота.
 - `endAt: utcDateTime` - конец слота.
-- `available: true` - признак, что слот свободен.
 
 ### `Booking`
 
@@ -92,6 +91,7 @@
 ## Вспомогательные модели API
 
 - `UserProfile` - публичный профиль пользователя вместе со списком его событий.
+- `EventBookingPage` - агрегированные данные для публичной страницы записи.
 - `EventList` - список событий.
 - `TimeSlotList` - список свободных слотов.
 - `BookingList` - список бронирований.
@@ -135,6 +135,7 @@
 - `PublicUsers.readProfile` - получить публичный профиль пользователя и список его событий.
 - `PublicUsers.listEvents` - получить список событий пользователя.
 - `PublicUsers.readEvent` - получить конкретное событие по `userSlug` и `eventSlug`.
+- `PublicBookings.readBookingPage` - получить данные для публичной страницы записи на событие.
 - `PublicBookings.listSlots` - получить свободные слоты события на ближайшие 14 дней.
 - `PublicBookings.createBooking` - создать бронирование для свободного слота.
 
@@ -143,6 +144,7 @@
 - `GET /users/{userSlug}`
 - `GET /users/{userSlug}/events`
 - `GET /users/{userSlug}/events/{eventSlug}`
+- `GET /users/{userSlug}/events/{eventSlug}/booking-page`
 - `GET /users/{userSlug}/events/{eventSlug}/slots`
 - `POST /users/{userSlug}/events/{eventSlug}/bookings`
 

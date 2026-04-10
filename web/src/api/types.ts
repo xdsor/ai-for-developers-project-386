@@ -27,7 +27,6 @@ export interface GuestContact {
 export interface TimeSlot {
   startAt: string
   endAt: string
-  available: boolean
 }
 
 export interface Booking {
@@ -43,6 +42,12 @@ export interface Booking {
 export interface UserProfile {
   user: User
   events: Event[]
+}
+
+export interface EventBookingPage {
+  host: User
+  event: Event
+  slots: TimeSlot[]
 }
 
 export interface EventList {

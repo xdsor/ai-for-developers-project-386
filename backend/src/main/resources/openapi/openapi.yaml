@@ -284,6 +284,36 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Guest Users
+  /users/{userSlug}/events/{eventSlug}/booking-page:
+    get:
+      operationId: GuestBookings_readBookingPage
+      description: Get all data needed to render the public booking page for an event.
+      parameters:
+        - name: userSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+        - name: eventSlug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NonEmptyString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventBookingPage'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Guest Bookings
   /users/{userSlug}/events/{eventSlug}/bookings:
     post:
       operationId: GuestBookings_createBooking
@@ -462,6 +492,21 @@ components:
         slug:
           $ref: '#/components/schemas/NonEmptyString'
       description: Meeting topic created by a user and shared through a public link.
+    EventBookingPage:
+      type: object
+      required:
+        - host
+        - event
+        - slots
+      properties:
+        host:
+          $ref: '#/components/schemas/User'
+        event:
+          $ref: '#/components/schemas/Event'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSlot'
     EventList:
       type: object
       required:
@@ -495,7 +540,6 @@ components:
       required:
         - startAt
         - endAt
-        - available
       properties:
         startAt:
           type: string
@@ -503,8 +547,6 @@ components:
         endAt:
           type: string
           format: date-time
-        available:
-          type: boolean
       description: Computed available slot for an event in the owner's next 14-day booking window.
     TimeSlotList:
       type: object

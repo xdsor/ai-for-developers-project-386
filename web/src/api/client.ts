@@ -4,6 +4,7 @@ import type {
   BookingList,
   CreateBookingRequest,
   CreateEventRequest,
+  EventBookingPage,
   Event,
   EventList,
   TimeSlotList,
@@ -59,6 +60,10 @@ export function listGuestEvents(userSlug: string): Promise<EventList> {
 
 export function getGuestEvent(userSlug: string, eventSlug: string): Promise<Event> {
   return request<Event>(`/users/${userSlug}/events/${eventSlug}`)
+}
+
+export function getEventBookingPage(userSlug: string, eventSlug: string): Promise<EventBookingPage> {
+  return request<EventBookingPage>(`/users/${userSlug}/events/${eventSlug}/booking-page`)
 }
 
 export function listSlots(userSlug: string, eventSlug: string): Promise<TimeSlotList> {

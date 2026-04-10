@@ -122,7 +122,7 @@ function EventSlotsContent({ userSlug, eventSlug, event, slots, hostName }: Even
               }}
             >
               {selectedSlot && (
-                <Grid gutter={0} style={{ minHeight: 320 }}>
+                <Grid gap={0} style={{ minHeight: 320 }}>
                   <Grid.Col
                     span={5}
                     p="xl"

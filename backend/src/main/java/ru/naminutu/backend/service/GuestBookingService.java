@@ -16,10 +16,14 @@ import ru.naminutu.backend.domain.EventRecord;
 import ru.naminutu.backend.domain.UserRecord;
 import ru.naminutu.backend.generated.model.BookingDto;
 import ru.naminutu.backend.generated.model.CreateBookingRequestDto;
+import ru.naminutu.backend.generated.model.EventBookingPageDto;
 import ru.naminutu.backend.generated.model.TimeSlotDto;
 import ru.naminutu.backend.generated.model.TimeSlotListDto;
 import ru.naminutu.backend.mapper.BookingDtoMapper;
+import ru.naminutu.backend.mapper.EventBookingPageDtoMapper;
+import ru.naminutu.backend.mapper.EventDtoMapper;
 import ru.naminutu.backend.mapper.TimeSlotDtoMapper;
+import ru.naminutu.backend.mapper.UserDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
@@ -42,6 +46,16 @@ public class GuestBookingService {
 		this.userService = userService;
 		this.guestEventService = guestEventService;
 		this.repository = repository;
+	}
+
+	public Either<DomainError, EventBookingPageDto> readBookingPage(String userSlug, String eventSlug) {
+		return userService.findUserBySlug(userSlug)
+			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
+				.map(event -> EventBookingPageDtoMapper.toDto(
+					UserDtoMapper.toDto(user),
+					EventDtoMapper.toDto(event),
+					computeAvailableSlots(user, event)
+				)));
 	}
 
 	public Either<DomainError, TimeSlotListDto> listSlots(String userSlug, String eventSlug) {

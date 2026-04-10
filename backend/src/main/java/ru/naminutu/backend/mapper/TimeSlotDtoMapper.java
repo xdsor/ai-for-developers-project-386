@@ -12,8 +12,7 @@ public final class TimeSlotDtoMapper {
 	public static TimeSlotDto toDto(OffsetDateTime startAt, OffsetDateTime endAt) {
 		return new TimeSlotDto()
 			.startAt(startAt)
-			.endAt(endAt)
-			.available(true);
+			.endAt(endAt);
 	}
 
 	public static TimeSlotListDto toListDto(List<TimeSlotDto> slots) {

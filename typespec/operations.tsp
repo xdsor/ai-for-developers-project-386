@@ -24,6 +24,11 @@ interface GuestUsers {
 @route("/users/{userSlug}/events/{eventSlug}")
 @tag("Guest Bookings")
 interface GuestBookings {
+  /** Get all data needed to render the public booking page for an event. */
+  @get
+  @route("booking-page")
+  readBookingPage(@path userSlug: Slug, @path eventSlug: Slug): EventBookingPage | Error;
+
   /** List free slots for the next 14 days from the host's current date. */
   @get
   @route("slots")

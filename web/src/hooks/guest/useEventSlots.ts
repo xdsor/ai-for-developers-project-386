@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import { getGuestEvent, getProfile, listSlots } from '../../api/client'
+import { getEventBookingPage } from '../../api/client'
 import type { Event, TimeSlot } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
@@ -23,12 +23,16 @@ export function useEventSlots(userSlug?: string, eventSlug?: string) {
 
     dispatch({ type: 'start' })
 
-    Promise.all([getGuestEvent(userSlug, eventSlug), listSlots(userSlug, eventSlug), getProfile(userSlug)])
-      .then(([event, slotsResponse, profile]) => {
+    getEventBookingPage(userSlug, eventSlug)
+      .then((bookingPage) => {
         if (!cancelled) {
           dispatch({
             type: 'success',
-            data: { event, slots: slotsResponse.items, hostName: profile.user.name },
+            data: {
+              event: bookingPage.event,
+              slots: bookingPage.slots,
+              hostName: bookingPage.host.name,
+            },
           })
         }
       })
