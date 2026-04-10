@@ -54,7 +54,7 @@ public class HostEventService {
 			.map(event -> {
 				repository.deleteEvent(event.id());
 				repository.deleteBookingsByEventId(event.id());
-				return (Void) null;
+				return null;
 			});
 	}
 
@@ -66,10 +66,8 @@ public class HostEventService {
 	}
 
 	private Either<DomainError, String> ensureUniqueSlug(String hostId, String slug, String ignoredEventId) {
-		var duplicateExists = repository.listEvents()
-			.exists(event -> event.ownerId().equals(hostId)
-				&& event.slug().equals(slug)
-				&& !event.id().equals(ignoredEventId));
+		var duplicateExists = repository.findEventBySlug(hostId, slug)
+			.exists(event -> !event.id().equals(ignoredEventId));
 
 		return duplicateExists
 			? Either.left(DomainErrors.slugAlreadyExists("Event slug already exists."))
@@ -81,8 +79,7 @@ public class HostEventService {
 	}
 
 	private List<EventDto> listEventsForHost(String hostId) {
-		return repository.listEvents()
-			.filter(event -> event.ownerId().equals(hostId))
+		return repository.listEventsByOwnerId(hostId)
 			.sortBy(EventRecord::title)
 			.map(EventDtoMapper::toDto)
 			.asJava();

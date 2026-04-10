@@ -46,8 +46,7 @@ public class GuestEventService {
 	}
 
 	private List<EventDto> listEventsForHost(String hostId) {
-		return repository.listEvents()
-			.filter(event -> event.ownerId().equals(hostId))
+		return repository.listEventsByOwnerId(hostId)
 			.sortBy(EventRecord::title)
 			.map(EventDtoMapper::toDto)
 			.asJava();

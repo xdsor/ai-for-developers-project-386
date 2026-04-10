@@ -19,6 +19,8 @@ public interface MeetingBookingRepository {
 
 	List<EventRecord> listEvents();
 
+	List<EventRecord> listEventsByOwnerId(String ownerId);
+
 	List<BookingRecord> listBookings();
 
 	List<BookingRecord> listBookingsByOwnerId(String ownerId);

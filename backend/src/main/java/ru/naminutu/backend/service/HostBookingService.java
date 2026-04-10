@@ -21,8 +21,7 @@ public class HostBookingService {
 
 	public Either<DomainError, BookingListDto> listBookings(String hostId) {
 		return hostService.findHostById(hostId)
-			.map(host -> repository.listBookings()
-				.filter(booking -> booking.ownerId().equals(host.id()))
+			.map(host -> repository.listBookingsByOwnerId(host.id())
 				.sorted(Comparator.comparing(BookingRecord::startAt))
 				.map(BookingDtoMapper::toDto)
 				.asJava())
