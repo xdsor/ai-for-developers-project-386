@@ -1,8 +1,7 @@
 body {
   margin: 0;
-  background:
-    linear-gradient(160deg, #f5f7f2 0%, #eef6f4 48%, #edf1f8 100%);
-  color: #15231d;
+  background: var(--mantine-color-body);
+  color: var(--mantine-color-text);
   font-family:
     'Avenir Next',
     'Segoe UI',
@@ -11,4 +10,8 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+a {
+  color: inherit;
 }

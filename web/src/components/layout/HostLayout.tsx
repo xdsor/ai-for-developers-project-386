@@ -1,6 +1,6 @@
 import { AppShell, Button, Group, Title } from '@mantine/core'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { appConfig } from '../../config/app'
+import { ThemeToggle } from './ThemeToggle'
 
 export function HostLayout() {
   const navigate = useNavigate()
@@ -32,6 +32,7 @@ export function HostLayout() {
             >
               Бронирования
             </Button>
+            <ThemeToggle />
           </Group>
         </Group>
       </AppShell.Header>

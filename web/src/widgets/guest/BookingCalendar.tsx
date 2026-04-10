@@ -1,4 +1,4 @@
-import { Box, Group, Stack, Text, UnstyledButton } from '@mantine/core'
+import { Box, Group, Stack, Text, UnstyledButton, useComputedColorScheme } from '@mantine/core'
 import { useMemo, useState } from 'react'
 import { MONTHS_RU, WEEK_DAYS, buildMonthGrid, todayKey } from '../../lib/dateUtils'
 import { IconChevron } from '../../ui/icons'
@@ -10,6 +10,7 @@ export interface BookingCalendarProps {
 }
 
 export function BookingCalendar({ availableDates, selectedDate, onSelect }: BookingCalendarProps) {
+  const colorScheme = useComputedColorScheme('light')
   const today = todayKey()
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear())
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
@@ -86,11 +87,11 @@ export function BookingCalendar({ availableDates, selectedDate, onSelect }: Book
                 color = 'white'
                 fw = 600
               } else if (isAvailable && isToday) {
-                bg = 'var(--mantine-color-dark-7)'
+                bg = colorScheme === 'dark' ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-dark-7)'
                 color = 'white'
                 border = '2px solid var(--mantine-color-teal-5)'
               } else if (isAvailable) {
-                bg = 'var(--mantine-color-dark-7)'
+                bg = colorScheme === 'dark' ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-dark-7)'
                 color = 'white'
               } else if (isToday) {
                 border = '2px solid var(--mantine-color-teal-5)'

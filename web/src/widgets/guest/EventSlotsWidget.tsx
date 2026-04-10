@@ -74,16 +74,16 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
 
   return (
     <Container size="lg" py={48}>
-      <Box
-        style={{
-          display: 'flex',
-          border: '1px solid var(--mantine-color-default-border)',
-          borderRadius: 12,
-          overflow: 'hidden',
-          background: 'white',
-          height: 520,
-        }}
-      >
+        <Box
+          style={{
+            display: 'flex',
+            border: '1px solid var(--mantine-color-default-border)',
+            borderRadius: 12,
+            overflow: 'hidden',
+            background: 'var(--mantine-color-body)',
+            height: 520,
+          }}
+        >
         {/* ── Left: host / event info ── */}
         <Box
           p="xl"
