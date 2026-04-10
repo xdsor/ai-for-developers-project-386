@@ -28,11 +28,6 @@ import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
 public class GuestBookingService {
-	private static final List<LocalTime> DAILY_SLOT_STARTS = List.of(
-		LocalTime.of(9, 0),
-		LocalTime.of(13, 0),
-		LocalTime.of(16, 0)
-	);
 
 	private final UserService userService;
 	private final GuestEventService guestEventService;
@@ -107,14 +102,18 @@ public class GuestBookingService {
 	private java.util.List<TimeSlotDto> computeAvailableSlots(UserRecord user, EventRecord event) {
 		var zone = ZoneId.of(user.timeZone());
 		var today = ZonedDateTime.now(zone).toLocalDate();
-		var takenStarts = HashSet.ofAll(repository.listBookings())
-			.filter(booking -> booking.eventId().equals(event.id()))
+		int duration = event.durationMinutes();
+		var takenStarts = HashSet.ofAll(repository.listBookingsByOwnerId(event.ownerId()))
 			.map(booking -> booking.startAt().toInstant());
 
+		int slotsPerDay = 1440 / duration;
+		var dailySlots = List.range(0, slotsPerDay)
+			.map(i -> LocalTime.MIDNIGHT.plusMinutes((long) i * duration));
+
 		return List.range(0, 14)
-			.flatMap(day -> DAILY_SLOT_STARTS.map(time -> ZonedDateTime.of(today.plusDays(day), time, zone).toOffsetDateTime()))
+			.flatMap(day -> dailySlots.map(time -> ZonedDateTime.of(today.plusDays(day), time, zone).toOffsetDateTime()))
 			.filter(start -> !takenStarts.contains(start.toInstant()))
-			.map(start -> TimeSlotDtoMapper.toDto(start, start.plusMinutes(event.durationMinutes())))
+			.map(start -> TimeSlotDtoMapper.toDto(start, start.plusMinutes(duration)))
 			.asJava();
 	}
 

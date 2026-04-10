@@ -67,6 +67,12 @@ public class InMemoryMeetingBookingRepository implements MeetingBookingRepositor
 	}
 
 	@Override
+	public synchronized List<BookingRecord> listBookingsByOwnerId(String ownerId) {
+		return List.ofAll(bookingsById.values())
+			.filter(booking -> booking.ownerId().equals(ownerId));
+	}
+
+	@Override
 	public synchronized EventRecord saveEvent(EventRecord event) {
 		eventsById.put(event.id(), event);
 		return event;

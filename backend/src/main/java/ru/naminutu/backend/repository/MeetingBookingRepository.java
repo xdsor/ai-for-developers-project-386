@@ -21,6 +21,8 @@ public interface MeetingBookingRepository {
 
 	List<BookingRecord> listBookings();
 
+	List<BookingRecord> listBookingsByOwnerId(String ownerId);
+
 	EventRecord saveEvent(EventRecord event);
 
 	BookingRecord saveBooking(BookingRecord booking);

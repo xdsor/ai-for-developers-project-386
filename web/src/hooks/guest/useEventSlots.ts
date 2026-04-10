@@ -1,12 +1,13 @@
 import { useEffect, useReducer } from 'react'
 import { getEventBookingPage } from '../../api/client'
-import type { Event, TimeSlot } from '../../api/types'
+import type { Event, TimeSlot, User } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
 interface EventSlotsData {
   event: Event
   slots: TimeSlot[]
   hostName: string
+  host: User
 }
 
 export function useEventSlots(userSlug?: string, eventSlug?: string) {
@@ -32,6 +33,7 @@ export function useEventSlots(userSlug?: string, eventSlug?: string) {
               event: bookingPage.event,
               slots: bookingPage.slots,
               hostName: bookingPage.host.name,
+              host: bookingPage.host,
             },
           })
         }
