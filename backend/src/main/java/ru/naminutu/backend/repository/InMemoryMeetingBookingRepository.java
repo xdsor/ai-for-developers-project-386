@@ -15,23 +15,17 @@ public class InMemoryMeetingBookingRepository implements MeetingBookingRepositor
 	private final Map<String, EventRecord> eventsById = new LinkedHashMap<>();
 	private final Map<String, BookingRecord> bookingsById = new LinkedHashMap<>();
 
-	public InMemoryMeetingBookingRepository() {
-		resetDemoData();
-	}
-
 	@Override
-	public synchronized void resetDemoData() {
+	public synchronized void clear() {
 		hostsById.clear();
 		eventsById.clear();
 		bookingsById.clear();
+	}
 
-		var host = HostRecord.demoHost();
-		var intro = EventRecord.demoIntro(host.id());
-		var deepDive = EventRecord.demoDeepDive(host.id());
-
+	@Override
+	public synchronized HostRecord saveHost(HostRecord host) {
 		hostsById.put(host.id(), host);
-		eventsById.put(intro.id(), intro);
-		eventsById.put(deepDive.id(), deepDive);
+		return host;
 	}
 
 	@Override

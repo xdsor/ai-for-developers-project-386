@@ -17,10 +17,6 @@ public class HostService {
 		this.repository = repository;
 	}
 
-	public void resetDemoData() {
-		repository.resetDemoData();
-	}
-
 	public Either<DomainError, HostDto> readHost(String hostId) {
 		return findHostById(hostId).map(HostDtoMapper::toDto);
 	}

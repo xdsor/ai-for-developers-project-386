@@ -7,7 +7,9 @@ import ru.naminutu.backend.domain.EventRecord;
 import ru.naminutu.backend.domain.HostRecord;
 
 public interface MeetingBookingRepository {
-	void resetDemoData();
+	void clear();
+
+	HostRecord saveHost(HostRecord host);
 
 	Option<HostRecord> findHostById(String hostId);
 

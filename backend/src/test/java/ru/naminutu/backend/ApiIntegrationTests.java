@@ -14,25 +14,46 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import ru.naminutu.backend.service.HostService;
+import ru.naminutu.backend.domain.EventRecord;
+import ru.naminutu.backend.domain.HostRecord;
+import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class ApiIntegrationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
-	private HostService hostService;
+	private MeetingBookingRepository repository;
 
 	@BeforeEach
 	void resetState() {
-		hostService.resetDemoData();
+		repository.clear();
+		repository.saveHost(new HostRecord("demo-user", "Demo User", "demo-user", "Europe/Berlin"));
+		repository.saveEvent(new EventRecord(
+			"event-intro",
+			"demo-user",
+			"Intro call",
+			"15-minute intro to align on the task.",
+			15,
+			"intro-call"
+		));
+		repository.saveEvent(new EventRecord(
+			"event-deep-dive",
+			"demo-user",
+			"Deep dive",
+			"45-minute working session for implementation details.",
+			45,
+			"deep-dive"
+		));
 	}
 
 	@Test
