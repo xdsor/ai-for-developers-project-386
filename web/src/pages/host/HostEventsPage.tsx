@@ -49,15 +49,15 @@ export function HostEventsPage() {
     <Stack gap="lg">
       <Group justify="space-between">
         <Title order={3}>События</Title>
-        <Button color="teal" onClick={openCreate}>
+        <Button color="brand" onClick={openCreate}>
           + Создать событие
         </Button>
       </Group>
 
-      {loading && <Loader color="teal" />}
+      {loading && <Loader color="brand" />}
 
       {error && (
-        <Alert color="red" title="Ошибка">
+        <Alert color="danger" title="Ошибка">
           {error}
         </Alert>
       )}

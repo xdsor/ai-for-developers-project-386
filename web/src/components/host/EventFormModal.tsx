@@ -105,7 +105,7 @@ export function EventFormModal({ opened, onClose, onSaved, hostId, event }: Even
       <form onSubmit={(e) => { void handleSubmit(e) }}>
         <Stack gap="sm">
           {error && (
-            <Alert color="red" title="Ошибка">
+            <Alert color="danger" title="Ошибка">
               {error}
             </Alert>
           )}
@@ -143,10 +143,10 @@ export function EventFormModal({ opened, onClose, onSaved, hostId, event }: Even
             }
           />
           <Group justify="flex-end" mt="sm">
-            <Button variant="subtle" color="gray" onClick={onClose} disabled={loading}>
+            <Button variant="subtle" color="neutral" onClick={onClose} disabled={loading}>
               Отмена
             </Button>
-            <Button type="submit" color="teal" loading={loading}>
+            <Button type="submit" color="brand" loading={loading}>
               {isEdit ? 'Сохранить' : 'Создать'}
             </Button>
           </Group>

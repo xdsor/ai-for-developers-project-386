@@ -1,4 +1,4 @@
-import { AppShell, Button, Group, Title } from '@mantine/core'
+import { AppShell, Button, Container, Group, Title } from '@mantine/core'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -8,37 +8,41 @@ export function HostLayout() {
   return (
     <AppShell header={{ height: 56 }} padding="md">
       <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Title order={4} style={{ cursor: 'pointer' }} onClick={() => navigate('/host')}>
-            Meeting Booking — Host
-          </Title>
-          <Group gap="xs">
-            <Button
-              component={NavLink}
-              to="/host"
-              end
-              variant="subtle"
-              color="gray"
-              size="sm"
-            >
-              События
-            </Button>
-            <Button
-              component={NavLink}
-              to="/host/bookings"
-              variant="subtle"
-              color="gray"
-              size="sm"
-            >
-              Бронирования
-            </Button>
-            <ThemeToggle />
+        <Container size="xl" h="100%" px="md">
+          <Group h="100%" justify="space-between">
+            <Title order={4} style={{ cursor: 'pointer' }} onClick={() => navigate('/host')}>
+              Meeting Booking — Host
+            </Title>
+            <Group gap="xs">
+              <Button
+                component={NavLink}
+                to="/host"
+                end
+                variant="subtle"
+                color="neutral"
+                size="sm"
+              >
+                События
+              </Button>
+              <Button
+                component={NavLink}
+                to="/host/bookings"
+                variant="subtle"
+                color="neutral"
+                size="sm"
+              >
+                Бронирования
+              </Button>
+              <ThemeToggle />
+            </Group>
           </Group>
-        </Group>
+        </Container>
       </AppShell.Header>
 
       <AppShell.Main>
-        <Outlet />
+        <Container size="xl" px="md">
+          <Outlet />
+        </Container>
       </AppShell.Main>
     </AppShell>
   )

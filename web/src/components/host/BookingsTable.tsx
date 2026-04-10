@@ -40,7 +40,7 @@ export function BookingsTable({ bookings, events }: BookingsTableProps) {
         {bookings.map((booking) => (
           <Table.Tr key={booking.id}>
             <Table.Td>
-              <Badge variant="light" color="teal">
+              <Badge variant="light" color="brand">
                 {events[booking.eventId] ?? booking.eventId}
               </Badge>
             </Table.Td>

@@ -94,7 +94,7 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
           }}
         >
           <Stack gap="md">
-            <Avatar color="teal" radius="xl" size="md">
+            <Avatar color="brand" radius="xl" size="md">
               {host.name[0]?.toUpperCase()}
             </Avatar>
             <div>
@@ -171,7 +171,7 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
                       <Button
                         key={slot.startAt}
                         variant="outline"
-                        color="teal"
+                        color="brand"
                         size="sm"
                         fullWidth
                         onClick={() => setSelectedSlot(slot)}
@@ -228,7 +228,7 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
               style={{ borderRight: '1px solid var(--mantine-color-default-border)' }}
             >
               <Stack gap="lg" h="100%">
-                <Avatar color="teal" radius="xl" size="md">
+                <Avatar color="brand" radius="xl" size="md">
                   {host.name[0]?.toUpperCase()}
                 </Avatar>
                 <div>

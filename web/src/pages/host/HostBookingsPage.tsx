@@ -16,10 +16,10 @@ export function HostBookingsPage() {
     <Stack gap="lg">
       <Title order={3}>Бронирования</Title>
 
-      {loading && <Loader color="teal" />}
+      {loading && <Loader color="brand" />}
 
       {error && (
-        <Alert color="red" title="Ошибка">
+        <Alert color="danger" title="Ошибка">
           {error}
         </Alert>
       )}

@@ -43,7 +43,7 @@ export function BookingForm({ hostSlug, eventSlug, slot, onSuccess }: BookingFor
     <form onSubmit={(e) => { void handleSubmit(e) }}>
       <Stack gap="sm">
         {error && (
-          <Alert color="red" title="Ошибка">
+          <Alert color="danger" title="Ошибка">
             {error}
           </Alert>
         )}
@@ -62,7 +62,7 @@ export function BookingForm({ hostSlug, eventSlug, slot, onSuccess }: BookingFor
           value={email}
           onChange={(e) => setEmail(e.currentTarget.value)}
         />
-        <Button type="submit" color="teal" loading={loading}>
+        <Button type="submit" color="brand" loading={loading}>
           Забронировать
         </Button>
       </Stack>

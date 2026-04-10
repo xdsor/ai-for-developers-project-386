@@ -32,7 +32,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
               </Text>
             </Table.Td>
             <Table.Td>
-              <Badge variant="light" color="teal">
+              <Badge variant="light" color="brand">
                 {event.durationMinutes} мин
               </Badge>
             </Table.Td>
@@ -45,7 +45,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
               <Group gap="xs" justify="flex-end">
                 <ActionIcon
                   variant="light"
-                  color="teal"
+                  color="brand"
                   onClick={() => onShare(event)}
                   title="Поделиться ссылкой"
                 >
@@ -53,7 +53,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
                 </ActionIcon>
                 <ActionIcon
                   variant="light"
-                  color="blue"
+                  color="accent"
                   onClick={() => onEdit(event)}
                   title="Редактировать"
                 >
@@ -61,7 +61,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
                 </ActionIcon>
                 <ActionIcon
                   variant="light"
-                  color="red"
+                  color="danger"
                   onClick={() => onDelete(event.id)}
                   title="Удалить"
                 >

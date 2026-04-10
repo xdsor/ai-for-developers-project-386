@@ -18,7 +18,7 @@ function formatDateTime(isoString: string): string {
 
 export function BookingSuccess({ booking, hostName }: BookingSuccessProps) {
   return (
-    <Alert color="teal" title="Встреча забронирована!">
+    <Alert color="brand" title="Встреча забронирована!">
       <Stack gap="xs">
         <Text size="sm">
           <strong>Начало:</strong> {formatDateTime(booking.startAt)}

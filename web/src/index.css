@@ -2,10 +2,7 @@ body {
   margin: 0;
   background: var(--mantine-color-body);
   color: var(--mantine-color-text);
-  font-family:
-    'Avenir Next',
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--mantine-font-family);
 }
 
 #root {

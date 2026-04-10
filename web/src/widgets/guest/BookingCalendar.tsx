@@ -83,19 +83,19 @@ export function BookingCalendar({ availableDates, selectedDate, onSelect }: Book
               const cursor = isAvailable ? 'pointer' : 'default'
 
               if (isSelected) {
-                bg = 'var(--mantine-color-teal-6)'
+                bg = 'var(--mantine-color-brand-6)'
                 color = 'white'
                 fw = 600
               } else if (isAvailable && isToday) {
                 bg = colorScheme === 'dark' ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-dark-7)'
                 color = 'white'
-                border = '2px solid var(--mantine-color-teal-5)'
+                border = '2px solid var(--mantine-color-brand-5)'
               } else if (isAvailable) {
                 bg = colorScheme === 'dark' ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-dark-7)'
                 color = 'white'
               } else if (isToday) {
-                border = '2px solid var(--mantine-color-teal-5)'
-                color = 'var(--mantine-color-teal-6)'
+                border = '2px solid var(--mantine-color-brand-5)'
+                color = 'var(--mantine-color-brand-6)'
               }
 
               return (

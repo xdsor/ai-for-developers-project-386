@@ -28,7 +28,7 @@ export function EventCard({ event, hostSlug }: EventCardProps) {
             </Text>
           )}
         </div>
-        <Badge color="teal" variant="light" style={{ flexShrink: 0 }}>
+        <Badge color="brand" variant="light" style={{ flexShrink: 0 }}>
           {event.durationMinutes} мин
         </Badge>
       </Group>

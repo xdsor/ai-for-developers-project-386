@@ -16,7 +16,7 @@ export function HostProfilePage() {
   if (loading) {
     return (
       <Container size="sm" py={64} ta="center">
-        <Loader color="teal" />
+        <Loader color="brand" />
       </Container>
     )
   }
@@ -24,7 +24,7 @@ export function HostProfilePage() {
   if (error || !profile) {
     return (
       <Container size="sm" py={48}>
-        <Alert color="red" title="Ошибка">
+        <Alert color="danger" title="Ошибка">
           {error ?? 'Хост не найден.'}
         </Alert>
       </Container>
@@ -37,11 +37,11 @@ export function HostProfilePage() {
     <Container size="sm" py={48}>
       <Stack gap="xl">
         <Stack gap="xs" align="flex-start">
-          <Avatar size="lg" color="teal" radius="xl">
+          <Avatar size="lg" color="brand" radius="xl">
             {host.name.charAt(0).toUpperCase()}
           </Avatar>
           <Title order={2}>{host.name}</Title>
-          <Badge variant="light" color="gray" size="sm">
+          <Badge variant="light" color="neutral" size="sm">
             {host.timeZone}
           </Badge>
         </Stack>

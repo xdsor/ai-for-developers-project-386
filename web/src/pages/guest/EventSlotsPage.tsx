@@ -16,7 +16,7 @@ export function EventSlotsPage() {
   if (loading) {
     return (
       <Container size="sm" py={64} ta="center">
-        <Loader color="teal" />
+        <Loader color="brand" />
       </Container>
     )
   }
@@ -24,7 +24,7 @@ export function EventSlotsPage() {
   if (error || !data || !hostSlug || !eventSlug) {
     return (
       <Container size="sm" py={48}>
-        <Alert color="red" title="Ошибка">
+        <Alert color="danger" title="Ошибка">
           {error ?? 'Событие не найдено.'}
         </Alert>
       </Container>
