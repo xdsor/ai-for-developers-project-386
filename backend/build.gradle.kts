@@ -20,10 +20,13 @@ repositories {
 
 dependencies {
 	implementation("io.vavr:vavr:0.10.6")
+	implementation("org.flywaydb:flyway-core")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.8")
 	implementation("io.swagger.core.v3:swagger-annotations-jakarta:2.2.31")
+	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

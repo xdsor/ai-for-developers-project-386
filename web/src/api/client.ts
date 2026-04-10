@@ -7,9 +7,7 @@ import type {
   EventBookingPage,
   Event,
   EventList,
-  Host,
   HostProfile,
-  TimeSlotList,
   UpdateEventRequest,
 } from './types'
 import { appConfig } from '../config/app'
@@ -54,20 +52,8 @@ export function getHostProfile(hostSlug: string): Promise<HostProfile> {
   return request<HostProfile>(`/hosts/${hostSlug}`)
 }
 
-export function listGuestEvents(hostSlug: string): Promise<EventList> {
-  return request<EventList>(`/hosts/${hostSlug}/events`)
-}
-
-export function getGuestEvent(hostSlug: string, eventSlug: string): Promise<Event> {
-  return request<Event>(`/hosts/${hostSlug}/events/${eventSlug}`)
-}
-
 export function getEventBookingPage(hostSlug: string, eventSlug: string): Promise<EventBookingPage> {
   return request<EventBookingPage>(`/hosts/${hostSlug}/events/${eventSlug}/booking-page`)
-}
-
-export function listSlots(hostSlug: string, eventSlug: string): Promise<TimeSlotList> {
-  return request<TimeSlotList>(`/hosts/${hostSlug}/events/${eventSlug}/slots`)
 }
 
 export function createBooking(
@@ -83,9 +69,6 @@ export function createBooking(
 
 // Host
 
-export function hostGetHost(hostId: string): Promise<Host> {
-  return request<Host>(`/host/${hostId}`)
-}
 
 export function hostListEvents(hostId: string): Promise<EventList> {
   return request<EventList>(`/host/${hostId}/events`)
