@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react'
-import { getProfile } from '../../api/client'
-import type { UserProfile } from '../../api/types'
+import { getHostProfile } from '../../api/client'
+import type { HostProfile } from '../../api/types'
 import {
   asyncStateReducer,
   createAsyncState,
@@ -8,13 +8,13 @@ import {
   type AsyncState,
 } from '../shared'
 
-export function useUserProfile(userSlug?: string): AsyncState<UserProfile> {
-  const [state, dispatch] = useReducer(asyncStateReducer<UserProfile>, undefined, () =>
-    createAsyncState<UserProfile>(),
+export function useHostProfile(hostSlug?: string): AsyncState<HostProfile> {
+  const [state, dispatch] = useReducer(asyncStateReducer<HostProfile>, undefined, () =>
+    createAsyncState<HostProfile>(),
   )
 
   useEffect(() => {
-    if (!userSlug) {
+    if (!hostSlug) {
       return
     }
 
@@ -22,7 +22,7 @@ export function useUserProfile(userSlug?: string): AsyncState<UserProfile> {
 
     dispatch({ type: 'start' })
 
-    getProfile(userSlug)
+    getHostProfile(hostSlug)
       .then((nextProfile) => {
         if (!cancelled) {
           dispatch({ type: 'success', data: nextProfile })
@@ -40,13 +40,13 @@ export function useUserProfile(userSlug?: string): AsyncState<UserProfile> {
     return () => {
       cancelled = true
     }
-  }, [userSlug])
+  }, [hostSlug])
 
-  if (!userSlug) {
+  if (!hostSlug) {
     return {
       data: null,
       loading: false,
-      error: 'Пользователь не найден.',
+      error: 'Хост не найден.',
     }
   }
 

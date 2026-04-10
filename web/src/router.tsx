@@ -3,7 +3,7 @@ import { HostLayout } from './components/layout/HostLayout'
 import { HostBookingsPage } from './pages/host/HostBookingsPage'
 import { HostEventsPage } from './pages/host/HostEventsPage'
 import { EventSlotsPage } from './pages/guest/EventSlotsPage'
-import { UserProfilePage } from './pages/guest/UserProfilePage'
+import { HostProfilePage } from './pages/guest/HostProfilePage'
 
 export const router = createBrowserRouter([
   {
@@ -11,11 +11,11 @@ export const router = createBrowserRouter([
     element: <Navigate to="/host" replace />,
   },
   {
-    path: '/users/:userSlug',
-    element: <UserProfilePage />,
+    path: '/hosts/:hostSlug',
+    element: <HostProfilePage />,
   },
   {
-    path: '/users/:userSlug/events/:eventSlug',
+    path: '/hosts/:hostSlug/events/:eventSlug',
     element: <EventSlotsPage />,
   },
   {

@@ -5,13 +5,13 @@ import type { Booking, TimeSlot } from '../../api/types'
 import { showSuccessNotification } from '../../lib/notifications'
 
 interface BookingFormProps {
-  userSlug: string
+  hostSlug: string
   eventSlug: string
   slot: TimeSlot
   onSuccess: (booking: Booking) => void
 }
 
-export function BookingForm({ userSlug, eventSlug, slot, onSuccess }: BookingFormProps) {
+export function BookingForm({ hostSlug, eventSlug, slot, onSuccess }: BookingFormProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,7 +23,7 @@ export function BookingForm({ userSlug, eventSlug, slot, onSuccess }: BookingFor
     setError(null)
 
     try {
-      const booking = await createBooking(userSlug, eventSlug, {
+      const booking = await createBooking(hostSlug, eventSlug, {
         guest: { name, email },
         startAt: slot.startAt,
       })

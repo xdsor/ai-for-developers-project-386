@@ -5,8 +5,8 @@
 ## Конфигурация
 
 - `VITE_API_BASE_URL` - базовый URL API, по умолчанию `/api`.
-- `VITE_DEMO_USER_SLUG` - публичный slug demo-пользователя, по умолчанию `demo-user`.
-- `VITE_DEMO_USER_ID` - `userId` для admin API, по умолчанию `demo-user`.
+- `VITE_DEMO_HOST_SLUG` - публичный slug demo-хоста, по умолчанию `demo-user`.
+- `VITE_DEMO_HOST_ID` - `hostId` для host API, по умолчанию `demo-user`.
 
 ## Правило синхронизации с TypeSpec
 

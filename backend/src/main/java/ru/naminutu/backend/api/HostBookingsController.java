@@ -15,7 +15,7 @@ public class HostBookingsController implements HostBookingsApi {
 	}
 
 	@Override
-	public ResponseEntity<BookingListDto> hostBookingsList(String userId) {
-		return ApiResponseMapper.ok(hostBookingService.listBookings(userId));
+	public ResponseEntity<BookingListDto> hostBookingsList(String hostId) {
+		return ApiResponseMapper.ok(hostBookingService.listBookings(hostId));
 	}
 }

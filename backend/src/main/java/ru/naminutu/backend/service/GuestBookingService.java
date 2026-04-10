@@ -13,7 +13,7 @@ import ru.naminutu.backend.api.DomainError;
 import ru.naminutu.backend.domain.BookingRecord;
 import ru.naminutu.backend.domain.DomainErrors;
 import ru.naminutu.backend.domain.EventRecord;
-import ru.naminutu.backend.domain.UserRecord;
+import ru.naminutu.backend.domain.HostRecord;
 import ru.naminutu.backend.generated.model.BookingDto;
 import ru.naminutu.backend.generated.model.CreateBookingRequestDto;
 import ru.naminutu.backend.generated.model.EventBookingPageDto;
@@ -22,62 +22,62 @@ import ru.naminutu.backend.generated.model.TimeSlotListDto;
 import ru.naminutu.backend.mapper.BookingDtoMapper;
 import ru.naminutu.backend.mapper.EventBookingPageDtoMapper;
 import ru.naminutu.backend.mapper.EventDtoMapper;
+import ru.naminutu.backend.mapper.HostDtoMapper;
 import ru.naminutu.backend.mapper.TimeSlotDtoMapper;
-import ru.naminutu.backend.mapper.UserDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
 public class GuestBookingService {
 
-	private final UserService userService;
+	private final HostService hostService;
 	private final GuestEventService guestEventService;
 	private final MeetingBookingRepository repository;
 
 	public GuestBookingService(
-		UserService userService,
+		HostService hostService,
 		GuestEventService guestEventService,
 		MeetingBookingRepository repository
 	) {
-		this.userService = userService;
+		this.hostService = hostService;
 		this.guestEventService = guestEventService;
 		this.repository = repository;
 	}
 
-	public Either<DomainError, EventBookingPageDto> readBookingPage(String userSlug, String eventSlug) {
-		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
+	public Either<DomainError, EventBookingPageDto> readBookingPage(String hostSlug, String eventSlug) {
+		return hostService.findHostBySlug(hostSlug)
+			.flatMap(host -> guestEventService.findEventBySlug(host.id(), eventSlug)
 				.map(event -> EventBookingPageDtoMapper.toDto(
-					UserDtoMapper.toDto(user),
+					HostDtoMapper.toDto(host),
 					EventDtoMapper.toDto(event),
-					computeAvailableSlots(user, event)
+					computeAvailableSlots(host, event)
 				)));
 	}
 
-	public Either<DomainError, TimeSlotListDto> listSlots(String userSlug, String eventSlug) {
-		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
-				.map(event -> computeAvailableSlots(user, event)))
+	public Either<DomainError, TimeSlotListDto> listSlots(String hostSlug, String eventSlug) {
+		return hostService.findHostBySlug(hostSlug)
+			.flatMap(host -> guestEventService.findEventBySlug(host.id(), eventSlug)
+				.map(event -> computeAvailableSlots(host, event)))
 			.map(TimeSlotDtoMapper::toListDto);
 	}
 
-	public Either<DomainError, BookingDto> createBooking(String userSlug, String eventSlug, CreateBookingRequestDto request) {
-		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> guestEventService.findEventBySlug(user.id(), eventSlug)
-				.flatMap(event -> validateBookingRequest(user, event, request)
+	public Either<DomainError, BookingDto> createBooking(String hostSlug, String eventSlug, CreateBookingRequestDto request) {
+		return hostService.findHostBySlug(hostSlug)
+			.flatMap(host -> guestEventService.findEventBySlug(host.id(), eventSlug)
+				.flatMap(event -> validateBookingRequest(host, event, request)
 					.map(slot -> BookingRecord.create(event, request, slot))
 					.map(repository::saveBooking)
 					.map(BookingDtoMapper::toDto)));
 	}
 
 	private Either<DomainError, OffsetDateTime> validateBookingRequest(
-		UserRecord user,
+		HostRecord host,
 		EventRecord event,
 		CreateBookingRequestDto request
 	) {
 		return requiredStartAt(request)
 			.flatMap(startAt -> availableSlot(event, startAt)
 				.map(TimeSlotDto::getStartAt)
-				.toEither(slotWindowError(user, startAt)));
+				.toEither(slotWindowError(host, startAt)));
 	}
 
 	private Either<DomainError, OffsetDateTime> requiredStartAt(CreateBookingRequestDto request) {
@@ -87,20 +87,20 @@ public class GuestBookingService {
 	}
 
 	private Option<TimeSlotDto> availableSlot(EventRecord event, OffsetDateTime startAt) {
-		return userService.findUserById(event.ownerId())
+		return hostService.findHostById(event.ownerId())
 			.toOption()
-			.flatMap(user -> List.ofAll(computeAvailableSlots(user, event))
+			.flatMap(host -> List.ofAll(computeAvailableSlots(host, event))
 				.find(slot -> slot.getStartAt().toInstant().equals(startAt.toInstant())));
 	}
 
-	private DomainError slotWindowError(UserRecord user, OffsetDateTime startAt) {
-		return isWithinWindow(user, startAt)
+	private DomainError slotWindowError(HostRecord host, OffsetDateTime startAt) {
+		return isWithinWindow(host, startAt)
 			? DomainErrors.slotUnavailable("Selected slot is unavailable.")
 			: DomainErrors.slotOutsideBookingWindow("Selected slot is outside the booking window.");
 	}
 
-	private java.util.List<TimeSlotDto> computeAvailableSlots(UserRecord user, EventRecord event) {
-		var zone = ZoneId.of(user.timeZone());
+	private java.util.List<TimeSlotDto> computeAvailableSlots(HostRecord host, EventRecord event) {
+		var zone = ZoneId.of(host.timeZone());
 		var today = ZonedDateTime.now(zone).toLocalDate();
 		int duration = event.durationMinutes();
 		var takenStarts = HashSet.ofAll(repository.listBookingsByOwnerId(event.ownerId()))
@@ -117,8 +117,8 @@ public class GuestBookingService {
 			.asJava();
 	}
 
-	private boolean isWithinWindow(UserRecord user, OffsetDateTime startAt) {
-		var zone = ZoneId.of(user.timeZone());
+	private boolean isWithinWindow(HostRecord host, OffsetDateTime startAt) {
+		var zone = ZoneId.of(host.timeZone());
 		var currentDate = ZonedDateTime.now(zone).toLocalDate();
 		var startDate = startAt.atZoneSameInstant(zone).toLocalDate();
 		return !startDate.isBefore(currentDate) && startDate.isBefore(currentDate.plusDays(14));

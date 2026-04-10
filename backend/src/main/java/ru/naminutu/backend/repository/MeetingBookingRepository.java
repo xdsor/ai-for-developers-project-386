@@ -4,14 +4,14 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import ru.naminutu.backend.domain.BookingRecord;
 import ru.naminutu.backend.domain.EventRecord;
-import ru.naminutu.backend.domain.UserRecord;
+import ru.naminutu.backend.domain.HostRecord;
 
 public interface MeetingBookingRepository {
 	void resetDemoData();
 
-	Option<UserRecord> findUserById(String userId);
+	Option<HostRecord> findHostById(String hostId);
 
-	Option<UserRecord> findUserBySlug(String userSlug);
+	Option<HostRecord> findHostBySlug(String hostSlug);
 
 	Option<EventRecord> findEventById(String eventId);
 

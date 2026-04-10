@@ -11,18 +11,18 @@ import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
 public class HostBookingService {
-	private final UserService userService;
+	private final HostService hostService;
 	private final MeetingBookingRepository repository;
 
-	public HostBookingService(UserService userService, MeetingBookingRepository repository) {
-		this.userService = userService;
+	public HostBookingService(HostService hostService, MeetingBookingRepository repository) {
+		this.hostService = hostService;
 		this.repository = repository;
 	}
 
-	public Either<DomainError, BookingListDto> listBookings(String userId) {
-		return userService.findUserById(userId)
-			.map(user -> repository.listBookings()
-				.filter(booking -> booking.ownerId().equals(user.id()))
+	public Either<DomainError, BookingListDto> listBookings(String hostId) {
+		return hostService.findHostById(hostId)
+			.map(host -> repository.listBookings()
+				.filter(booking -> booking.ownerId().equals(host.id()))
 				.sorted(Comparator.comparing(BookingRecord::startAt))
 				.map(BookingDtoMapper::toDto)
 				.asJava())

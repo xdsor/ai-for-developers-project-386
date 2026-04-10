@@ -8,7 +8,7 @@ interface EventFormModalProps {
   opened: boolean
   onClose: () => void
   onSaved: () => void
-  userId: string
+  hostId: string
   event?: Event
 }
 
@@ -31,7 +31,7 @@ function titleToSlug(title: string): string {
     .replace(/^-|-$/g, '')
 }
 
-export function EventFormModal({ opened, onClose, onSaved, userId, event }: EventFormModalProps) {
+export function EventFormModal({ opened, onClose, onSaved, hostId, event }: EventFormModalProps) {
   const isEdit = !!event
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -77,9 +77,9 @@ export function EventFormModal({ opened, onClose, onSaved, userId, event }: Even
 
     try {
       if (isEdit) {
-        await hostUpdateEvent(userId, event.id, data)
+        await hostUpdateEvent(hostId, event.id, data)
       } else {
-        await hostCreateEvent(userId, data)
+        await hostCreateEvent(hostId, data)
       }
       showSuccessNotification({
         title: isEdit ? 'Событие обновлено' : 'Событие создано',

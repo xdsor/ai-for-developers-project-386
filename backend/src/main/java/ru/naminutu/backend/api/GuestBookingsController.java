@@ -18,21 +18,21 @@ public class GuestBookingsController implements GuestBookingsApi {
 	}
 
 	@Override
-	public ResponseEntity<EventBookingPageDto> guestBookingsReadBookingPage(String userSlug, String eventSlug) {
-		return ApiResponseMapper.ok(guestBookingService.readBookingPage(userSlug, eventSlug));
+	public ResponseEntity<EventBookingPageDto> guestBookingsReadBookingPage(String hostSlug, String eventSlug) {
+		return ApiResponseMapper.ok(guestBookingService.readBookingPage(hostSlug, eventSlug));
 	}
 
 	@Override
 	public ResponseEntity<BookingDto> guestBookingsCreateBooking(
-		String userSlug,
+		String hostSlug,
 		String eventSlug,
 		CreateBookingRequestDto createBookingRequestDto
 	) {
-		return ApiResponseMapper.ok(guestBookingService.createBooking(userSlug, eventSlug, createBookingRequestDto));
+		return ApiResponseMapper.ok(guestBookingService.createBooking(hostSlug, eventSlug, createBookingRequestDto));
 	}
 
 	@Override
-	public ResponseEntity<TimeSlotListDto> guestBookingsListSlots(String userSlug, String eventSlug) {
-		return ApiResponseMapper.ok(guestBookingService.listSlots(userSlug, eventSlug));
+	public ResponseEntity<TimeSlotListDto> guestBookingsListSlots(String hostSlug, String eventSlug) {
+		return ApiResponseMapper.ok(guestBookingService.listSlots(hostSlug, eventSlug));
 	}
 }

@@ -18,27 +18,27 @@ public class HostEventsController implements HostEventsApi {
 	}
 
 	@Override
-	public ResponseEntity<EventDto> hostEventsCreate(String userId, CreateEventRequestDto createEventRequestDto) {
-		return ApiResponseMapper.ok(hostEventService.createEvent(userId, createEventRequestDto));
+	public ResponseEntity<EventDto> hostEventsCreate(String hostId, CreateEventRequestDto createEventRequestDto) {
+		return ApiResponseMapper.ok(hostEventService.createEvent(hostId, createEventRequestDto));
 	}
 
 	@Override
-	public ResponseEntity<Void> hostEventsDelete(String userId, String eventId) {
-		return ApiResponseMapper.noContent(hostEventService.deleteEvent(userId, eventId));
+	public ResponseEntity<Void> hostEventsDelete(String hostId, String eventId) {
+		return ApiResponseMapper.noContent(hostEventService.deleteEvent(hostId, eventId));
 	}
 
 	@Override
-	public ResponseEntity<EventListDto> hostEventsList(String userId) {
-		return ApiResponseMapper.ok(hostEventService.listEvents(userId));
+	public ResponseEntity<EventListDto> hostEventsList(String hostId) {
+		return ApiResponseMapper.ok(hostEventService.listEvents(hostId));
 	}
 
 	@Override
-	public ResponseEntity<EventDto> hostEventsRead(String userId, String eventId) {
-		return ApiResponseMapper.ok(hostEventService.readEvent(userId, eventId));
+	public ResponseEntity<EventDto> hostEventsRead(String hostId, String eventId) {
+		return ApiResponseMapper.ok(hostEventService.readEvent(hostId, eventId));
 	}
 
 	@Override
-	public ResponseEntity<EventDto> hostEventsUpdate(String userId, String eventId, UpdateEventRequestDto updateEventRequestDto) {
-		return ApiResponseMapper.ok(hostEventService.updateEvent(userId, eventId, updateEventRequestDto));
+	public ResponseEntity<EventDto> hostEventsUpdate(String hostId, String eventId, UpdateEventRequestDto updateEventRequestDto) {
+		return ApiResponseMapper.ok(hostEventService.updateEvent(hostId, eventId, updateEventRequestDto));
 	}
 }

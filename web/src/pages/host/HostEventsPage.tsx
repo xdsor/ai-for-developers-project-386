@@ -26,7 +26,7 @@ import {
 export function HostEventsPage() {
   const [modalOpened, setModalOpened] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | undefined>(undefined)
-  const { events, setEvents, loading, error, reload } = useHostEvents(appConfig.demoUserId)
+  const { events, setEvents, loading, error, reload } = useHostEvents(appConfig.demoHostId)
 
   useErrorNotification(error, {
     id: 'host-events-load-error',
@@ -36,7 +36,7 @@ export function HostEventsPage() {
   const handleDelete = async (eventId: string) => {
     if (!confirm('Удалить событие?')) return
     try {
-      await hostDeleteEvent(appConfig.demoUserId, eventId)
+      await hostDeleteEvent(appConfig.demoHostId, eventId)
       setEvents((prev) => prev.filter((e) => e.id !== eventId))
       showSuccessNotification({
         title: 'Событие удалено',
@@ -119,7 +119,7 @@ export function HostEventsPage() {
                           variant="light"
                           color="teal"
                           onClick={() => {
-                            const url = `${window.location.origin}/users/${appConfig.demoUserSlug}/events/${event.slug}`
+                            const url = `${window.location.origin}/hosts/${appConfig.demoHostSlug}/events/${event.slug}`
                             void navigator.clipboard
                               .writeText(url)
                               .then(() => {
@@ -169,7 +169,7 @@ export function HostEventsPage() {
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
         onSaved={reload}
-        userId={appConfig.demoUserId}
+        hostId={appConfig.demoHostId}
         event={editingEvent}
       />
     </Stack>

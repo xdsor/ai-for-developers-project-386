@@ -1,15 +1,15 @@
 import { Alert, Avatar, Badge, Container, Loader, Stack, Text, Title } from '@mantine/core'
 import { useParams } from 'react-router-dom'
 import { EventCard } from '../../components/guest/EventCard'
-import { useUserProfile } from '../../hooks/guest/useUserProfile'
+import { useHostProfile } from '../../hooks/guest/useHostProfile'
 import { useErrorNotification } from '../../lib/notifications'
 
-export function UserProfilePage() {
-  const { userSlug } = useParams<{ userSlug: string }>()
-  const { data: profile, loading, error } = useUserProfile(userSlug)
+export function HostProfilePage() {
+  const { hostSlug } = useParams<{ hostSlug: string }>()
+  const { data: profile, loading, error } = useHostProfile(hostSlug)
 
   useErrorNotification(error, {
-    id: 'guest-user-profile-load-error',
+    id: 'guest-host-profile-load-error',
     title: 'Не удалось загрузить профиль',
   })
 
@@ -25,24 +25,24 @@ export function UserProfilePage() {
     return (
       <Container size="sm" py={48}>
         <Alert color="red" title="Ошибка">
-          {error ?? 'Пользователь не найден.'}
+          {error ?? 'Хост не найден.'}
         </Alert>
       </Container>
     )
   }
 
-  const { user, events } = profile
+  const { host, events } = profile
 
   return (
     <Container size="sm" py={48}>
       <Stack gap="xl">
         <Stack gap="xs" align="flex-start">
           <Avatar size="lg" color="teal" radius="xl">
-            {user.name.charAt(0).toUpperCase()}
+            {host.name.charAt(0).toUpperCase()}
           </Avatar>
-          <Title order={2}>{user.name}</Title>
+          <Title order={2}>{host.name}</Title>
           <Badge variant="light" color="gray" size="sm">
-            {user.timeZone}
+            {host.timeZone}
           </Badge>
         </Stack>
 
@@ -55,7 +55,7 @@ export function UserProfilePage() {
           ) : (
             <Stack gap="sm">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} userSlug={user.slug} />
+                <EventCard key={event.id} event={event} hostSlug={host.slug} />
               ))}
             </Stack>
           )}

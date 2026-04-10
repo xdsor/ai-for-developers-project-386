@@ -36,7 +36,7 @@ export function HostLayout() {
               variant="subtle"
               color="teal"
               size="sm"
-              onClick={() => navigate(`/users/${appConfig.demoUserSlug}`)}
+              onClick={() => navigate(`/hosts/${appConfig.demoHostSlug}`)}
             >
               Публичный сайт
             </Button>

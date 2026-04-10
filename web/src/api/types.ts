@@ -3,7 +3,7 @@ export type Slug = string
 export type Email = string
 export type IanaTimeZone = string
 
-export interface User {
+export interface Host {
   id: ResourceId
   name: string
   slug: Slug
@@ -39,13 +39,13 @@ export interface Booking {
   createdAt: string
 }
 
-export interface UserProfile {
-  user: User
+export interface HostProfile {
+  host: Host
   events: Event[]
 }
 
 export interface EventBookingPage {
-  host: User
+  host: Host
   event: Event
   slots: TimeSlot[]
 }

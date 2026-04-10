@@ -7,11 +7,11 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 import ru.naminutu.backend.domain.BookingRecord;
 import ru.naminutu.backend.domain.EventRecord;
-import ru.naminutu.backend.domain.UserRecord;
+import ru.naminutu.backend.domain.HostRecord;
 
 @Repository
 public class InMemoryMeetingBookingRepository implements MeetingBookingRepository {
-	private final Map<String, UserRecord> usersById = new LinkedHashMap<>();
+	private final Map<String, HostRecord> hostsById = new LinkedHashMap<>();
 	private final Map<String, EventRecord> eventsById = new LinkedHashMap<>();
 	private final Map<String, BookingRecord> bookingsById = new LinkedHashMap<>();
 
@@ -21,28 +21,28 @@ public class InMemoryMeetingBookingRepository implements MeetingBookingRepositor
 
 	@Override
 	public synchronized void resetDemoData() {
-		usersById.clear();
+		hostsById.clear();
 		eventsById.clear();
 		bookingsById.clear();
 
-		var user = UserRecord.demoUser();
-		var intro = EventRecord.demoIntro(user.id());
-		var deepDive = EventRecord.demoDeepDive(user.id());
+		var host = HostRecord.demoHost();
+		var intro = EventRecord.demoIntro(host.id());
+		var deepDive = EventRecord.demoDeepDive(host.id());
 
-		usersById.put(user.id(), user);
+		hostsById.put(host.id(), host);
 		eventsById.put(intro.id(), intro);
 		eventsById.put(deepDive.id(), deepDive);
 	}
 
 	@Override
-	public synchronized Option<UserRecord> findUserById(String userId) {
-		return Option.of(usersById.get(userId));
+	public synchronized Option<HostRecord> findHostById(String hostId) {
+		return Option.of(hostsById.get(hostId));
 	}
 
 	@Override
-	public synchronized Option<UserRecord> findUserBySlug(String userSlug) {
-		return List.ofAll(usersById.values())
-			.find(user -> user.slug().equals(userSlug));
+	public synchronized Option<HostRecord> findHostBySlug(String hostSlug) {
+		return List.ofAll(hostsById.values())
+			.find(host -> host.slug().equals(hostSlug));
 	}
 
 	@Override

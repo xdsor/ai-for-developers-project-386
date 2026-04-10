@@ -16,15 +16,15 @@ alias IanaTimeZone = NonEmptyString;
 @maxValue(1440)
 scalar PositiveDurationMinutes extends int32;
 
-@doc("Application user who owns events and receives bookings.")
-model User {
+@doc("Host who owns events and receives bookings.")
+model Host {
   id: ResourceId;
   name: NonEmptyString;
   slug: Slug;
   timeZone: IanaTimeZone;
 }
 
-@doc("Meeting topic created by a user and shared through a public link.")
+@doc("Meeting topic created by a host and shared through a public link.")
 model Event {
   id: ResourceId;
   ownerId: ResourceId;
@@ -57,13 +57,13 @@ model Booking {
   createdAt: utcDateTime;
 }
 
-model UserProfile {
-  user: User;
+model HostProfile {
+  host: Host;
   events: Event[];
 }
 
 model EventBookingPage {
-  host: User;
+  host: Host;
   event: Event;
   slots: TimeSlot[];
 }

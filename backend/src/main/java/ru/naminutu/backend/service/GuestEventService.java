@@ -8,46 +8,46 @@ import ru.naminutu.backend.domain.DomainErrors;
 import ru.naminutu.backend.domain.EventRecord;
 import ru.naminutu.backend.generated.model.EventDto;
 import ru.naminutu.backend.generated.model.EventListDto;
-import ru.naminutu.backend.generated.model.UserProfileDto;
+import ru.naminutu.backend.generated.model.HostProfileDto;
 import ru.naminutu.backend.mapper.EventDtoMapper;
-import ru.naminutu.backend.mapper.UserDtoMapper;
-import ru.naminutu.backend.mapper.UserProfileDtoMapper;
+import ru.naminutu.backend.mapper.HostDtoMapper;
+import ru.naminutu.backend.mapper.HostProfileDtoMapper;
 import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
 public class GuestEventService {
-	private final UserService userService;
+	private final HostService hostService;
 	private final MeetingBookingRepository repository;
 
-	public GuestEventService(UserService userService, MeetingBookingRepository repository) {
-		this.userService = userService;
+	public GuestEventService(HostService hostService, MeetingBookingRepository repository) {
+		this.hostService = hostService;
 		this.repository = repository;
 	}
 
-	public Either<DomainError, UserProfileDto> readProfile(String userSlug) {
-		return userService.findUserBySlug(userSlug)
-			.map(user -> UserProfileDtoMapper.toDto(UserDtoMapper.toDto(user), listEventsForUser(user.id())));
+	public Either<DomainError, HostProfileDto> readProfile(String hostSlug) {
+		return hostService.findHostBySlug(hostSlug)
+			.map(host -> HostProfileDtoMapper.toDto(HostDtoMapper.toDto(host), listEventsForHost(host.id())));
 	}
 
-	public Either<DomainError, EventListDto> listEvents(String userSlug) {
-		return userService.findUserBySlug(userSlug)
-			.map(user -> EventDtoMapper.toListDto(listEventsForUser(user.id())));
+	public Either<DomainError, EventListDto> listEvents(String hostSlug) {
+		return hostService.findHostBySlug(hostSlug)
+			.map(host -> EventDtoMapper.toListDto(listEventsForHost(host.id())));
 	}
 
-	public Either<DomainError, EventDto> readEvent(String userSlug, String eventSlug) {
-		return userService.findUserBySlug(userSlug)
-			.flatMap(user -> findEventBySlug(user.id(), eventSlug))
+	public Either<DomainError, EventDto> readEvent(String hostSlug, String eventSlug) {
+		return hostService.findHostBySlug(hostSlug)
+			.flatMap(host -> findEventBySlug(host.id(), eventSlug))
 			.map(EventDtoMapper::toDto);
 	}
 
-	Either<DomainError, EventRecord> findEventBySlug(String userId, String eventSlug) {
-		return repository.findEventBySlug(userId, eventSlug)
+	Either<DomainError, EventRecord> findEventBySlug(String hostId, String eventSlug) {
+		return repository.findEventBySlug(hostId, eventSlug)
 			.toEither(DomainErrors.notFound("Event not found."));
 	}
 
-	private List<EventDto> listEventsForUser(String userId) {
+	private List<EventDto> listEventsForHost(String hostId) {
 		return repository.listEvents()
-			.filter(event -> event.ownerId().equals(userId))
+			.filter(event -> event.ownerId().equals(hostId))
 			.sortBy(EventRecord::title)
 			.map(EventDtoMapper::toDto)
 			.asJava();

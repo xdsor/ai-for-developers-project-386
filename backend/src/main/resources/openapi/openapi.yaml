@@ -3,18 +3,18 @@ info:
   title: Meeting Booking Service
   version: 0.0.0
 tags:
-  - name: Guest Users
+  - name: Guest Hosts
   - name: Guest Bookings
-  - name: Host Users
+  - name: Host Account
   - name: Host Events
   - name: Host Bookings
 paths:
-  /host/users/{userId}:
+  /host/{hostId}:
     get:
-      operationId: HostUsers_read
-      description: Read a user by id.
+      operationId: HostAccount_read
+      description: Read a host by id.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -25,7 +25,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Host'
         default:
           description: An unexpected error response.
           content:
@@ -33,13 +33,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Host Users
-  /host/users/{userId}/bookings:
+        - Host Account
+  /host/{hostId}/bookings:
     get:
       operationId: HostBookings_list
-      description: List bookings for a user across all owned events.
+      description: List bookings for a host across all owned events.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -59,12 +59,12 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Host Bookings
-  /host/users/{userId}/events:
+  /host/{hostId}/events:
     get:
       operationId: HostEvents_list
-      description: List events owned by a user.
+      description: List events owned by a host.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -86,9 +86,9 @@ paths:
         - Host Events
     post:
       operationId: HostEvents_create
-      description: Create an event owned by a user.
+      description: Create an event owned by a host.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -114,12 +114,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEventRequest'
-  /host/users/{userId}/events/{eventId}:
+  /host/{hostId}/events/{eventId}:
     get:
       operationId: HostEvents_read
-      description: Read an event owned by a user.
+      description: Read an event owned by a host.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -146,9 +146,9 @@ paths:
         - Host Events
     patch:
       operationId: HostEvents_update
-      description: Update an event owned by a user.
+      description: Update an event owned by a host.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -181,9 +181,9 @@ paths:
               $ref: '#/components/schemas/UpdateEventRequest'
     delete:
       operationId: HostEvents_delete
-      description: Delete an event owned by a user.
+      description: Delete an event owned by a host.
       parameters:
-        - name: userId
+        - name: hostId
           in: path
           required: true
           schema:
@@ -204,12 +204,12 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Host Events
-  /users/{userSlug}:
+  /hosts/{hostSlug}:
     get:
-      operationId: GuestUsers_readProfile
-      description: Get a public user profile and all events created by that user.
+      operationId: GuestHosts_readProfile
+      description: Get a public host profile and all events created by that host.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -220,7 +220,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProfile'
+                $ref: '#/components/schemas/HostProfile'
         default:
           description: An unexpected error response.
           content:
@@ -228,13 +228,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Guest Users
-  /users/{userSlug}/events:
+        - Guest Hosts
+  /hosts/{hostSlug}/events:
     get:
-      operationId: GuestUsers_listEvents
-      description: List public events created by a user.
+      operationId: GuestHosts_listEvents
+      description: List public events created by a host.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -253,13 +253,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Guest Users
-  /users/{userSlug}/events/{eventSlug}:
+        - Guest Hosts
+  /hosts/{hostSlug}/events/{eventSlug}:
     get:
-      operationId: GuestUsers_readEvent
-      description: Get a public event by user slug and event slug.
+      operationId: GuestHosts_readEvent
+      description: Get a public event by host slug and event slug.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -283,13 +283,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-        - Guest Users
-  /users/{userSlug}/events/{eventSlug}/booking-page:
+        - Guest Hosts
+  /hosts/{hostSlug}/events/{eventSlug}/booking-page:
     get:
       operationId: GuestBookings_readBookingPage
       description: Get all data needed to render the public booking page for an event.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -314,12 +314,12 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - Guest Bookings
-  /users/{userSlug}/events/{eventSlug}/bookings:
+  /hosts/{hostSlug}/events/{eventSlug}/bookings:
     post:
       operationId: GuestBookings_createBooking
       description: Create a booking for a free slot in the event host's 14-day booking window.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -350,12 +350,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateBookingRequest'
-  /users/{userSlug}/events/{eventSlug}/slots:
+  /hosts/{hostSlug}/events/{eventSlug}/slots:
     get:
       operationId: GuestBookings_listSlots
       description: List free slots for the next 14 days from the host's current date.
       parameters:
-        - name: userSlug
+        - name: hostSlug
           in: path
           required: true
           schema:
@@ -491,7 +491,7 @@ components:
           $ref: '#/components/schemas/PositiveDurationMinutes'
         slug:
           $ref: '#/components/schemas/NonEmptyString'
-      description: Meeting topic created by a user and shared through a public link.
+      description: Meeting topic created by a host and shared through a public link.
     EventBookingPage:
       type: object
       required:
@@ -500,7 +500,7 @@ components:
         - slots
       properties:
         host:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/Host'
         event:
           $ref: '#/components/schemas/Event'
         slots:
@@ -527,6 +527,35 @@ components:
         email:
           $ref: '#/components/schemas/Email'
       description: Guest contact details captured directly on the booking in the MVP.
+    Host:
+      type: object
+      required:
+        - id
+        - name
+        - slug
+        - timeZone
+      properties:
+        id:
+          type: string
+        name:
+          $ref: '#/components/schemas/NonEmptyString'
+        slug:
+          $ref: '#/components/schemas/NonEmptyString'
+        timeZone:
+          $ref: '#/components/schemas/NonEmptyString'
+      description: Host who owns events and receives bookings.
+    HostProfile:
+      type: object
+      required:
+        - host
+        - events
+      properties:
+        host:
+          $ref: '#/components/schemas/Host'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
     NonEmptyString:
       type: string
       minLength: 1
@@ -568,32 +597,3 @@ components:
           $ref: '#/components/schemas/PositiveDurationMinutes'
         slug:
           $ref: '#/components/schemas/NonEmptyString'
-    User:
-      type: object
-      required:
-        - id
-        - name
-        - slug
-        - timeZone
-      properties:
-        id:
-          type: string
-        name:
-          $ref: '#/components/schemas/NonEmptyString'
-        slug:
-          $ref: '#/components/schemas/NonEmptyString'
-        timeZone:
-          $ref: '#/components/schemas/NonEmptyString'
-      description: Application user who owns events and receives bookings.
-    UserProfile:
-      type: object
-      required:
-        - user
-        - events
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'

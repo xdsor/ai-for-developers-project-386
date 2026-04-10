@@ -7,10 +7,10 @@ import type {
   EventBookingPage,
   Event,
   EventList,
+  Host,
+  HostProfile,
   TimeSlotList,
   UpdateEventRequest,
-  User,
-  UserProfile,
 } from './types'
 import { appConfig } from '../config/app'
 
@@ -50,32 +50,32 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 // Guest
 
-export function getProfile(userSlug: string): Promise<UserProfile> {
-  return request<UserProfile>(`/users/${userSlug}`)
+export function getHostProfile(hostSlug: string): Promise<HostProfile> {
+  return request<HostProfile>(`/hosts/${hostSlug}`)
 }
 
-export function listGuestEvents(userSlug: string): Promise<EventList> {
-  return request<EventList>(`/users/${userSlug}/events`)
+export function listGuestEvents(hostSlug: string): Promise<EventList> {
+  return request<EventList>(`/hosts/${hostSlug}/events`)
 }
 
-export function getGuestEvent(userSlug: string, eventSlug: string): Promise<Event> {
-  return request<Event>(`/users/${userSlug}/events/${eventSlug}`)
+export function getGuestEvent(hostSlug: string, eventSlug: string): Promise<Event> {
+  return request<Event>(`/hosts/${hostSlug}/events/${eventSlug}`)
 }
 
-export function getEventBookingPage(userSlug: string, eventSlug: string): Promise<EventBookingPage> {
-  return request<EventBookingPage>(`/users/${userSlug}/events/${eventSlug}/booking-page`)
+export function getEventBookingPage(hostSlug: string, eventSlug: string): Promise<EventBookingPage> {
+  return request<EventBookingPage>(`/hosts/${hostSlug}/events/${eventSlug}/booking-page`)
 }
 
-export function listSlots(userSlug: string, eventSlug: string): Promise<TimeSlotList> {
-  return request<TimeSlotList>(`/users/${userSlug}/events/${eventSlug}/slots`)
+export function listSlots(hostSlug: string, eventSlug: string): Promise<TimeSlotList> {
+  return request<TimeSlotList>(`/hosts/${hostSlug}/events/${eventSlug}/slots`)
 }
 
 export function createBooking(
-  userSlug: string,
+  hostSlug: string,
   eventSlug: string,
   data: CreateBookingRequest,
 ): Promise<Booking> {
-  return request<Booking>(`/users/${userSlug}/events/${eventSlug}/bookings`, {
+  return request<Booking>(`/hosts/${hostSlug}/events/${eventSlug}/bookings`, {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -83,40 +83,40 @@ export function createBooking(
 
 // Host
 
-export function hostGetUser(userId: string): Promise<User> {
-  return request<User>(`/host/users/${userId}`)
+export function hostGetHost(hostId: string): Promise<Host> {
+  return request<Host>(`/host/${hostId}`)
 }
 
-export function hostListEvents(userId: string): Promise<EventList> {
-  return request<EventList>(`/host/users/${userId}/events`)
+export function hostListEvents(hostId: string): Promise<EventList> {
+  return request<EventList>(`/host/${hostId}/events`)
 }
 
-export function hostCreateEvent(userId: string, data: CreateEventRequest): Promise<Event> {
-  return request<Event>(`/host/users/${userId}/events`, {
+export function hostCreateEvent(hostId: string, data: CreateEventRequest): Promise<Event> {
+  return request<Event>(`/host/${hostId}/events`, {
     method: 'POST',
     body: JSON.stringify(data),
   })
 }
 
-export function hostGetEvent(userId: string, eventId: string): Promise<Event> {
-  return request<Event>(`/host/users/${userId}/events/${eventId}`)
+export function hostGetEvent(hostId: string, eventId: string): Promise<Event> {
+  return request<Event>(`/host/${hostId}/events/${eventId}`)
 }
 
 export function hostUpdateEvent(
-  userId: string,
+  hostId: string,
   eventId: string,
   data: UpdateEventRequest,
 ): Promise<Event> {
-  return request<Event>(`/host/users/${userId}/events/${eventId}`, {
+  return request<Event>(`/host/${hostId}/events/${eventId}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   })
 }
 
-export function hostDeleteEvent(userId: string, eventId: string): Promise<void> {
-  return request<void>(`/host/users/${userId}/events/${eventId}`, { method: 'DELETE' })
+export function hostDeleteEvent(hostId: string, eventId: string): Promise<void> {
+  return request<void>(`/host/${hostId}/events/${eventId}`, { method: 'DELETE' })
 }
 
-export function hostListBookings(userId: string): Promise<BookingList> {
-  return request<BookingList>(`/host/users/${userId}/bookings`)
+export function hostListBookings(hostId: string): Promise<BookingList> {
+  return request<BookingList>(`/host/${hostId}/bookings`)
 }

@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.naminutu.backend.service.UserService;
+import ru.naminutu.backend.service.HostService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,24 +23,24 @@ class ApiIntegrationTests {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private UserService userService;
+	private HostService hostService;
 
 	@BeforeEach
 	void resetState() {
-		userService.resetDemoData();
+		hostService.resetDemoData();
 	}
 
 	@Test
 	void returnsPublicProfileFromGeneratedRoute() throws Exception {
-		mockMvc.perform(get("/users/demo-user"))
+		mockMvc.perform(get("/hosts/demo-user"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.user.id").value("demo-user"))
+			.andExpect(jsonPath("$.host.id").value("demo-user"))
 			.andExpect(jsonPath("$.events", hasSize(2)));
 	}
 
 	@Test
 	void createsHostEventThroughGeneratedInterfaceImplementation() throws Exception {
-		mockMvc.perform(post("/host/users/demo-user/events")
+		mockMvc.perform(post("/host/demo-user/events")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
 					{
@@ -57,14 +57,14 @@ class ApiIntegrationTests {
 
 	@Test
 	void createsBookingUsingAvailableSlot() throws Exception {
-		var slotsResponse = mockMvc.perform(get("/users/demo-user/events/intro-call/slots"))
+		var slotsResponse = mockMvc.perform(get("/hosts/demo-user/events/intro-call/slots"))
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse()
 			.getContentAsString();
 		var firstStartAt = slotsResponse.split("\"startAt\":\"")[1].split("\"")[0];
 
-		mockMvc.perform(post("/users/demo-user/events/intro-call/bookings")
+		mockMvc.perform(post("/hosts/demo-user/events/intro-call/bookings")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
 					{

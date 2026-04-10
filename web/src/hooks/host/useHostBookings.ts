@@ -8,7 +8,7 @@ interface HostBookingsData {
   eventsById: Record<string, string>
 }
 
-export function useHostBookings(userId: string) {
+export function useHostBookings(hostId: string) {
   const [state, dispatch] = useReducer(asyncStateReducer<HostBookingsData>, undefined, () =>
     createAsyncState<HostBookingsData>(),
   )
@@ -18,7 +18,7 @@ export function useHostBookings(userId: string) {
 
     dispatch({ type: 'start' })
 
-    Promise.all([hostListBookings(userId), hostListEvents(userId)])
+    Promise.all([hostListBookings(hostId), hostListEvents(hostId)])
       .then(([bookingsResponse, eventsResponse]) => {
         if (cancelled) {
           return
@@ -48,7 +48,7 @@ export function useHostBookings(userId: string) {
     return () => {
       cancelled = true
     }
-  }, [userId])
+  }, [hostId])
 
   return state
 }

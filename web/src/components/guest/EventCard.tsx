@@ -4,10 +4,10 @@ import type { Event } from '../../api/types'
 
 interface EventCardProps {
   event: Event
-  userSlug: string
+  hostSlug: string
 }
 
-export function EventCard({ event, userSlug }: EventCardProps) {
+export function EventCard({ event, hostSlug }: EventCardProps) {
   const navigate = useNavigate()
 
   return (
@@ -17,7 +17,7 @@ export function EventCard({ event, userSlug }: EventCardProps) {
       radius="md"
       withBorder
       style={{ cursor: 'pointer' }}
-      onClick={() => navigate(`/users/${userSlug}/events/${event.slug}`)}
+      onClick={() => navigate(`/hosts/${hostSlug}/events/${event.slug}`)}
     >
       <Group justify="space-between" align="flex-start">
         <div style={{ flex: 1 }}>

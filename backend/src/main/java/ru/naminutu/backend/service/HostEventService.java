@@ -16,41 +16,41 @@ import ru.naminutu.backend.repository.MeetingBookingRepository;
 
 @Service
 public class HostEventService {
-	private final UserService userService;
+	private final HostService hostService;
 	private final MeetingBookingRepository repository;
 
-	public HostEventService(UserService userService, MeetingBookingRepository repository) {
-		this.userService = userService;
+	public HostEventService(HostService hostService, MeetingBookingRepository repository) {
+		this.hostService = hostService;
 		this.repository = repository;
 	}
 
-	public Either<DomainError, EventListDto> listEvents(String userId) {
-		return userService.findUserById(userId)
-			.map(user -> EventDtoMapper.toListDto(listEventsForUser(user.id())));
+	public Either<DomainError, EventListDto> listEvents(String hostId) {
+		return hostService.findHostById(hostId)
+			.map(host -> EventDtoMapper.toListDto(listEventsForHost(host.id())));
 	}
 
-	public Either<DomainError, EventDto> createEvent(String userId, CreateEventRequestDto request) {
-		return userService.findUserById(userId)
-			.flatMap(user -> ensureUniqueSlug(user.id(), request.getSlug(), null)
-				.map(ignored -> EventRecord.create(user.id(), request))
+	public Either<DomainError, EventDto> createEvent(String hostId, CreateEventRequestDto request) {
+		return hostService.findHostById(hostId)
+			.flatMap(host -> ensureUniqueSlug(host.id(), request.getSlug(), null)
+				.map(ignored -> EventRecord.create(host.id(), request))
 				.map(repository::saveEvent)
 				.map(EventDtoMapper::toDto));
 	}
 
-	public Either<DomainError, EventDto> readEvent(String userId, String eventId) {
-		return findEventForHost(userId, eventId).map(EventDtoMapper::toDto);
+	public Either<DomainError, EventDto> readEvent(String hostId, String eventId) {
+		return findEventForHost(hostId, eventId).map(EventDtoMapper::toDto);
 	}
 
-	public Either<DomainError, EventDto> updateEvent(String userId, String eventId, UpdateEventRequestDto request) {
-		return findEventForHost(userId, eventId)
-			.flatMap(event -> ensureUniqueSlug(userId, slugOrDefault(request, event), event.id())
+	public Either<DomainError, EventDto> updateEvent(String hostId, String eventId, UpdateEventRequestDto request) {
+		return findEventForHost(hostId, eventId)
+			.flatMap(event -> ensureUniqueSlug(hostId, slugOrDefault(request, event), event.id())
 				.map(ignored -> EventRecord.update(event, request))
 				.map(repository::saveEvent)
 				.map(EventDtoMapper::toDto));
 	}
 
-	public Either<DomainError, Void> deleteEvent(String userId, String eventId) {
-		return findEventForHost(userId, eventId)
+	public Either<DomainError, Void> deleteEvent(String hostId, String eventId) {
+		return findEventForHost(hostId, eventId)
 			.map(event -> {
 				repository.deleteEvent(event.id());
 				repository.deleteBookingsByEventId(event.id());
@@ -58,16 +58,16 @@ public class HostEventService {
 			});
 	}
 
-	private Either<DomainError, EventRecord> findEventForHost(String userId, String eventId) {
-		return userService.findUserById(userId)
+	private Either<DomainError, EventRecord> findEventForHost(String hostId, String eventId) {
+		return hostService.findHostById(hostId)
 			.flatMap(ignored -> repository.findEventById(eventId)
-				.filter(event -> event.ownerId().equals(userId))
+				.filter(event -> event.ownerId().equals(hostId))
 				.toEither(DomainErrors.notFound("Event not found.")));
 	}
 
-	private Either<DomainError, String> ensureUniqueSlug(String userId, String slug, String ignoredEventId) {
+	private Either<DomainError, String> ensureUniqueSlug(String hostId, String slug, String ignoredEventId) {
 		var duplicateExists = repository.listEvents()
-			.exists(event -> event.ownerId().equals(userId)
+			.exists(event -> event.ownerId().equals(hostId)
 				&& event.slug().equals(slug)
 				&& !event.id().equals(ignoredEventId));
 
@@ -80,9 +80,9 @@ public class HostEventService {
 		return Option.of(request.getSlug()).getOrElse(event.slug());
 	}
 
-	private List<EventDto> listEventsForUser(String userId) {
+	private List<EventDto> listEventsForHost(String hostId) {
 		return repository.listEvents()
-			.filter(event -> event.ownerId().equals(userId))
+			.filter(event -> event.ownerId().equals(hostId))
 			.sortBy(EventRecord::title)
 			.map(EventDtoMapper::toDto)
 			.asJava();

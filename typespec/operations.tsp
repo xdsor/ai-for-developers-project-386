@@ -2,92 +2,92 @@ using Http;
 
 namespace MeetingBooking;
 
-@route("/users")
-@tag("Guest Users")
-interface GuestUsers {
-  /** Get a public user profile and all events created by that user. */
+@route("/hosts")
+@tag("Guest Hosts")
+interface GuestHosts {
+  /** Get a public host profile and all events created by that host. */
   @get
-  @route("{userSlug}")
-  readProfile(@path userSlug: Slug): UserProfile | Error;
+  @route("{hostSlug}")
+  readProfile(@path hostSlug: Slug): HostProfile | Error;
 
-  /** List public events created by a user. */
+  /** List public events created by a host. */
   @get
-  @route("{userSlug}/events")
-  listEvents(@path userSlug: Slug): EventList | Error;
+  @route("{hostSlug}/events")
+  listEvents(@path hostSlug: Slug): EventList | Error;
 
-  /** Get a public event by user slug and event slug. */
+  /** Get a public event by host slug and event slug. */
   @get
-  @route("{userSlug}/events/{eventSlug}")
-  readEvent(@path userSlug: Slug, @path eventSlug: Slug): Event | Error;
+  @route("{hostSlug}/events/{eventSlug}")
+  readEvent(@path hostSlug: Slug, @path eventSlug: Slug): Event | Error;
 }
 
-@route("/users/{userSlug}/events/{eventSlug}")
+@route("/hosts/{hostSlug}/events/{eventSlug}")
 @tag("Guest Bookings")
 interface GuestBookings {
   /** Get all data needed to render the public booking page for an event. */
   @get
   @route("booking-page")
-  readBookingPage(@path userSlug: Slug, @path eventSlug: Slug): EventBookingPage | Error;
+  readBookingPage(@path hostSlug: Slug, @path eventSlug: Slug): EventBookingPage | Error;
 
   /** List free slots for the next 14 days from the host's current date. */
   @get
   @route("slots")
-  listSlots(@path userSlug: Slug, @path eventSlug: Slug): TimeSlotList | Error;
+  listSlots(@path hostSlug: Slug, @path eventSlug: Slug): TimeSlotList | Error;
 
   /** Create a booking for a free slot in the event host's 14-day booking window. */
   @post
   @route("bookings")
   createBooking(
-    @path userSlug: Slug,
+    @path hostSlug: Slug,
     @path eventSlug: Slug,
     @body body: CreateBookingRequest,
   ): Booking | Error;
 }
 
-@route("/host/users")
-@tag("Host Users")
-interface HostUsers {
-  /** Read a user by id. */
+@route("/host")
+@tag("Host Account")
+interface HostAccount {
+  /** Read a host by id. */
   @get
-  @route("{userId}")
-  read(@path userId: ResourceId): User | Error;
+  @route("{hostId}")
+  read(@path hostId: ResourceId): Host | Error;
 }
 
-@route("/host/users/{userId}/events")
+@route("/host/{hostId}/events")
 @tag("Host Events")
 interface HostEvents {
-  /** List events owned by a user. */
+  /** List events owned by a host. */
   @get
-  list(@path userId: ResourceId): EventList | Error;
+  list(@path hostId: ResourceId): EventList | Error;
 
-  /** Create an event owned by a user. */
+  /** Create an event owned by a host. */
   @post
-  create(@path userId: ResourceId, @body body: CreateEventRequest): Event | Error;
+  create(@path hostId: ResourceId, @body body: CreateEventRequest): Event | Error;
 
-  /** Read an event owned by a user. */
+  /** Read an event owned by a host. */
   @get
   @route("{eventId}")
-  read(@path userId: ResourceId, @path eventId: ResourceId): Event | Error;
+  read(@path hostId: ResourceId, @path eventId: ResourceId): Event | Error;
 
-  /** Update an event owned by a user. */
+  /** Update an event owned by a host. */
   @patch
   @route("{eventId}")
   update(
-    @path userId: ResourceId,
+    @path hostId: ResourceId,
     @path eventId: ResourceId,
     @body body: UpdateEventRequest,
   ): Event | Error;
 
-  /** Delete an event owned by a user. */
+  /** Delete an event owned by a host. */
   @delete
   @route("{eventId}")
-  delete(@path userId: ResourceId, @path eventId: ResourceId): void | Error;
+  delete(@path hostId: ResourceId, @path eventId: ResourceId): void | Error;
 }
 
-@route("/host/users/{userId}/bookings")
+@route("/host/{hostId}/bookings")
 @tag("Host Bookings")
 interface HostBookings {
-  /** List bookings for a user across all owned events. */
+  /** List bookings for a host across all owned events. */
   @get
-  list(@path userId: ResourceId): BookingList | Error;
+  list(@path hostId: ResourceId): BookingList | Error;
 }

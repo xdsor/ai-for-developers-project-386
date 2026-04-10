@@ -3,7 +3,7 @@ import { hostListEvents } from '../../api/client'
 import type { Event } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
-export function useHostEvents(userId: string) {
+export function useHostEvents(hostId: string) {
   const [state, dispatch] = useReducer(asyncStateReducer<Event[]>, undefined, () =>
     createAsyncState<Event[]>(),
   )
@@ -14,7 +14,7 @@ export function useHostEvents(userId: string) {
 
     dispatch({ type: 'start' })
 
-    hostListEvents(userId)
+    hostListEvents(hostId)
       .then((response) => {
         if (!cancelled) {
           dispatch({ type: 'success', data: response.items })
@@ -32,7 +32,7 @@ export function useHostEvents(userId: string) {
     return () => {
       cancelled = true
     }
-  }, [reloadKey, userId])
+  }, [reloadKey, hostId])
 
   return {
     events: state.data ?? [],

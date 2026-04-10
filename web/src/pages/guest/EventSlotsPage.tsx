@@ -17,7 +17,7 @@ import {
 } from '@mantine/core'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import type { Booking, TimeSlot, User } from '../../api/types'
+import type { Booking, Host, TimeSlot } from '../../api/types'
 import { BookingForm } from '../../components/guest/BookingForm'
 import { BookingSuccess } from '../../components/guest/BookingSuccess'
 import { useEventSlots } from '../../hooks/guest/useEventSlots'
@@ -238,14 +238,14 @@ function BookingCalendar({ availableDates, selectedDate, onSelect }: CalendarPro
 // ── Main content ──────────────────────────────────────────────────────────────
 
 interface ContentProps {
-  userSlug: string
+  hostSlug: string
   eventSlug: string
   event: NonNullable<ReturnType<typeof useEventSlots>['data']>['event']
-  host: User
+  host: Host
   slots: TimeSlot[]
 }
 
-function EventSlotsContent({ userSlug, eventSlug, event, host, slots }: ContentProps) {
+function EventSlotsContent({ hostSlug, eventSlug, event, host, slots }: ContentProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(() =>
     slots.length > 0 ? toDateKey(slots[0].startAt) : null,
   )
@@ -439,7 +439,7 @@ function EventSlotsContent({ userSlug, eventSlug, event, host, slots }: ContentP
                 <Title order={4}>Подтверждение записи</Title>
                 <Divider />
                 <BookingForm
-                  userSlug={userSlug}
+                  hostSlug={hostSlug}
                   eventSlug={eventSlug}
                   slot={selectedSlot}
                   onSuccess={(b) => {
@@ -459,8 +459,8 @@ function EventSlotsContent({ userSlug, eventSlug, event, host, slots }: ContentP
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export function EventSlotsPage() {
-  const { userSlug, eventSlug } = useParams<{ userSlug: string; eventSlug: string }>()
-  const { data, loading, error } = useEventSlots(userSlug, eventSlug)
+  const { hostSlug, eventSlug } = useParams<{ hostSlug: string; eventSlug: string }>()
+  const { data, loading, error } = useEventSlots(hostSlug, eventSlug)
 
   useErrorNotification(error, {
     id: 'guest-event-slots-load-error',
@@ -475,7 +475,7 @@ export function EventSlotsPage() {
     )
   }
 
-  if (error || !data || !userSlug || !eventSlug) {
+  if (error || !data || !hostSlug || !eventSlug) {
     return (
       <Container size="sm" py={48}>
         <Alert color="red" title="Ошибка">
@@ -487,8 +487,8 @@ export function EventSlotsPage() {
 
   return (
     <EventSlotsContent
-      key={`${userSlug}:${eventSlug}`}
-      userSlug={userSlug}
+      key={`${hostSlug}:${eventSlug}`}
+      hostSlug={hostSlug}
       eventSlug={eventSlug}
       event={data.event}
       host={data.host}

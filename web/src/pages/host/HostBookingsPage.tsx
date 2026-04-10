@@ -5,7 +5,7 @@ import { useHostBookings } from '../../hooks/host/useHostBookings'
 import { useErrorNotification } from '../../lib/notifications'
 
 export function HostBookingsPage() {
-  const { data, loading, error } = useHostBookings(appConfig.demoUserId)
+  const { data, loading, error } = useHostBookings(appConfig.demoHostId)
 
   useErrorNotification(error, {
     id: 'host-bookings-load-error',

@@ -1,22 +1,22 @@
 import { useEffect, useReducer } from 'react'
 import { getEventBookingPage } from '../../api/client'
-import type { Event, TimeSlot, User } from '../../api/types'
+import type { Event, Host, TimeSlot } from '../../api/types'
 import { asyncStateReducer, createAsyncState, getErrorMessage } from '../shared'
 
 interface EventSlotsData {
   event: Event
   slots: TimeSlot[]
   hostName: string
-  host: User
+  host: Host
 }
 
-export function useEventSlots(userSlug?: string, eventSlug?: string) {
+export function useEventSlots(hostSlug?: string, eventSlug?: string) {
   const [state, dispatch] = useReducer(asyncStateReducer<EventSlotsData>, undefined, () =>
     createAsyncState<EventSlotsData>(),
   )
 
   useEffect(() => {
-    if (!userSlug || !eventSlug) {
+    if (!hostSlug || !eventSlug) {
       return
     }
 
@@ -24,7 +24,7 @@ export function useEventSlots(userSlug?: string, eventSlug?: string) {
 
     dispatch({ type: 'start' })
 
-    getEventBookingPage(userSlug, eventSlug)
+    getEventBookingPage(hostSlug, eventSlug)
       .then((bookingPage) => {
         if (!cancelled) {
           dispatch({
@@ -50,9 +50,9 @@ export function useEventSlots(userSlug?: string, eventSlug?: string) {
     return () => {
       cancelled = true
     }
-  }, [eventSlug, userSlug])
+  }, [eventSlug, hostSlug])
 
-  if (!userSlug || !eventSlug) {
+  if (!hostSlug || !eventSlug) {
     return {
       data: null,
       loading: false,
