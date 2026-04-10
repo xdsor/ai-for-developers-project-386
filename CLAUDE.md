@@ -6,9 +6,29 @@ This repository is split into three packages:
 
 - `typespec/` defines the API contract in `main.tsp`, `models.tsp`, and `operations.tsp`. TypeSpec emits `typespec/tsp-output/schema/openapi.yaml`, which is then synced into `backend/src/main/resources/openapi/openapi.yaml`.
 - `backend/` contains the Spring Boot application. Generated OpenAPI Java classes are written to `backend/build/generated/openapi/src/main/java`, while handwritten application code stays in `backend/src/main/java`.
-- `web/` contains the React + Vite frontend. App code lives in `web/src/` and is organized by feature: `pages/`, `components/`, `hooks/`, `api/`, and `config/`.
+- `web/` contains the React + Vite frontend. App code lives in `web/src/` and is organized by layer: `pages/`, `widgets/`, `components/`, `hooks/`, `ui/`, `lib/`, `api/`, and `config/`.
 
 Keep contract changes in `typespec/` first, then sync the backend OpenAPI copy, regenerate backend classes, and update `web/src/api/types.ts`, `web/src/api/client.ts`, and any affected UI.
+
+## Frontend Code Style
+
+The `web/src/` directory follows a lightweight feature-slice approach. Each layer has a strict responsibility:
+
+- `api/` — HTTP calls and TypeScript types only. No UI, no state.
+- `config/` — static app configuration constants.
+- `lib/` — pure utility functions and shared hooks (`dateUtils.ts`, `shareUtils.ts`, `notifications.ts`). No React components.
+- `ui/` — stateless, pure presentational primitives (icons, base elements). No data fetching, no business logic.
+- `components/` — focused UI components that may hold minimal local form/interaction state and call API directly (e.g. `BookingForm`). No data fetching hooks.
+- `widgets/` — composite components that orchestrate `components/` and `ui/` with local state. No data fetching hooks. Organized by domain: `widgets/guest/`, `widgets/host/`.
+- `hooks/` — data-fetching hooks only. Return loading/error/data. Organized by domain: `hooks/guest/`, `hooks/host/`.
+- `pages/` — thin route-level components. Only use `useParams`, call a data-fetching hook, handle loading/error guards, and render one widget. No layout code, no business logic.
+
+**Rules:**
+- Pages must not contain layout markup or business logic — delegate to widgets.
+- Widgets must not fetch data — receive everything via props.
+- Hooks must not render UI.
+- Utilities in `lib/` must be pure functions with no side-effects on React state.
+- Prefer extracting a new widget or utility over growing a page or existing component.
 
 ## Backend Code Style
 

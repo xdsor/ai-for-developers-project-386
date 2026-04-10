@@ -1,6 +1,5 @@
 package ru.naminutu.backend.service;
 
-import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
@@ -19,6 +18,7 @@ import ru.naminutu.backend.generated.model.CreateBookingRequestDto;
 import ru.naminutu.backend.generated.model.EventBookingPageDto;
 import ru.naminutu.backend.generated.model.TimeSlotDto;
 import ru.naminutu.backend.generated.model.TimeSlotListDto;
+import ru.naminutu.backend.lib.TimeInterval;
 import ru.naminutu.backend.mapper.BookingDtoMapper;
 import ru.naminutu.backend.mapper.EventBookingPageDtoMapper;
 import ru.naminutu.backend.mapper.EventDtoMapper;
@@ -103,8 +103,8 @@ public class GuestBookingService {
 		var zone = ZoneId.of(host.timeZone());
 		var today = ZonedDateTime.now(zone).toLocalDate();
 		int duration = event.durationMinutes();
-		var takenStarts = HashSet.ofAll(repository.listBookingsByOwnerId(event.ownerId()))
-			.map(booking -> booking.startAt().toInstant());
+		var occupiedIntervals = List.ofAll(repository.listBookingsByOwnerId(event.ownerId()))
+			.map(this::toInterval);
 
 		int slotsPerDay = 1440 / duration;
 		var dailySlots = List.range(0, slotsPerDay)
@@ -112,9 +112,18 @@ public class GuestBookingService {
 
 		return List.range(0, 14)
 			.flatMap(day -> dailySlots.map(time -> ZonedDateTime.of(today.plusDays(day), time, zone).toOffsetDateTime()))
-			.filter(start -> !takenStarts.contains(start.toInstant()))
+			.filter(start -> isAvailable(start, duration, occupiedIntervals))
 			.map(start -> TimeSlotDtoMapper.toDto(start, start.plusMinutes(duration)))
 			.asJava();
+	}
+
+	private boolean isAvailable(OffsetDateTime startAt, int durationMinutes, List<TimeInterval> occupiedIntervals) {
+		var candidate = new TimeInterval(startAt, startAt.plusMinutes(durationMinutes));
+		return occupiedIntervals.forAll(interval -> !candidate.overlaps(interval));
+	}
+
+	private TimeInterval toInterval(BookingRecord booking) {
+		return new TimeInterval(booking.startAt(), booking.endAt());
 	}
 
 	private boolean isWithinWindow(HostRecord host, OffsetDateTime startAt) {
