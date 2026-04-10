@@ -8,6 +8,7 @@ import {
   Group,
   Modal,
   ScrollArea,
+  SegmentedControl,
   Stack,
   Text,
   Title,
@@ -16,7 +17,13 @@ import { useMemo, useState } from 'react'
 import type { Booking, Host, TimeSlot } from '../../api/types'
 import { BookingForm } from '../../components/guest/BookingForm'
 import { BookingSuccess } from '../../components/guest/BookingSuccess'
-import { formatDayHeader, formatModalDate, formatTime, toDateKey } from '../../lib/dateUtils'
+import {
+  formatDayHeader,
+  formatModalDate,
+  formatTime,
+  formatTimeInTimeZone,
+  toDateKey,
+} from '../../lib/dateUtils'
 import { IconClock, IconGlobe } from '../../ui/icons'
 import { BookingCalendar } from './BookingCalendar'
 
@@ -38,6 +45,13 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
   )
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const [booking, setBooking] = useState<Booking | null>(null)
+  const [slotTimeZoneMode, setSlotTimeZoneMode] = useState<'guest' | 'host'>('guest')
+
+  const guestTimeZone = useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone || host.timeZone,
+    [host.timeZone],
+  )
+  const slotsDisplayTimeZone = slotTimeZoneMode === 'host' ? host.timeZone : guestTimeZone
 
   const availableDates = useMemo(() => {
     const s = new Set<string>()
@@ -129,6 +143,21 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
                 <Text fw={700} size="lg" tt="capitalize">
                   {formatDayHeader(selectedDate)}
                 </Text>
+                <Stack gap={6} mt="sm">
+                  <SegmentedControl
+                    fullWidth
+                    size="xs"
+                    value={slotTimeZoneMode}
+                    onChange={(value) => setSlotTimeZoneMode(value as 'guest' | 'host')}
+                    data={[
+                      { label: 'Мое время', value: 'guest' },
+                      { label: 'Время хоста', value: 'host' },
+                    ]}
+                  />
+                  <Text size="xs" c="dimmed">
+                    {slotsDisplayTimeZone}
+                  </Text>
+                </Stack>
               </Box>
               <Divider />
               <ScrollArea style={{ flex: 1 }}>
@@ -147,7 +176,7 @@ export function EventSlotsWidget({ hostSlug, eventSlug, event, host, slots }: Ev
                         fullWidth
                         onClick={() => setSelectedSlot(slot)}
                       >
-                        {formatTime(slot.startAt)}
+                        {formatTimeInTimeZone(slot.startAt, slotsDisplayTimeZone)}
                       </Button>
                     ))
                   )}

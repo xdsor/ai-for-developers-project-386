@@ -32,14 +32,6 @@ export function HostLayout() {
             >
               Бронирования
             </Button>
-            <Button
-              variant="subtle"
-              color="teal"
-              size="sm"
-              onClick={() => navigate(`/hosts/${appConfig.demoHostSlug}`)}
-            >
-              Публичный сайт
-            </Button>
           </Group>
         </Group>
       </AppShell.Header>

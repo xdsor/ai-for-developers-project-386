@@ -12,6 +12,15 @@ export function formatTime(iso: string): string {
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 }
 
+export function formatTimeInTimeZone(iso: string, timeZone: string): string {
+  return new Intl.DateTimeFormat('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone,
+  }).format(new Date(iso))
+}
+
 export function formatDayHeader(dateKey: string): string {
   const [y, m, d] = dateKey.split('-').map(Number)
   return new Date(y, m - 1, d).toLocaleDateString('ru-RU', {
@@ -27,7 +36,7 @@ export function formatModalDate(iso: string): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  })
+  }).replace(" г.", "")
 }
 
 export const MONTHS_RU = [
