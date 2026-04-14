@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
     server: {
+      host: '127.0.0.1',
       proxy: {
         '/api': {
           target: apiProxyTarget,

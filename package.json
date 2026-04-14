@@ -6,6 +6,9 @@
     "spec:sync:backend": "npm run spec:build && mkdir -p backend/src/main/resources/openapi && cp typespec/tsp-output/schema/openapi.yaml backend/src/main/resources/openapi/openapi.yaml",
     "spec:watch": "npm --prefix typespec run watch:openapi",
     "mock": "prism mock typespec/tsp-output/schema/openapi.yaml --host 127.0.0.1 --port 4010 --dynamic",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
     "web:dev": "npm --prefix web run dev",
     "web:dev:backend": "VITE_API_PROXY_TARGET=http://localhost:8080 npm --prefix web run dev",
     "backend:dev": "npm run spec:sync:backend && ./backend/gradlew -p backend bootRun",
@@ -13,6 +16,7 @@
     "dev": "concurrently -k -n spec,mock,web -c yellow,cyan,green \"npm run spec:watch\" \"npm run mock\" \"npm run web:dev\""
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@stoplight/prism-cli": "^5.14.2",
     "concurrently": "^9.2.1"
   }

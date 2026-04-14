@@ -16,6 +16,8 @@ export function EventCard({ event, hostSlug }: EventCardProps) {
       padding="md"
       radius="md"
       withBorder
+      role="button"
+      aria-label={`Открыть событие ${event.title}`}
       style={{ cursor: 'pointer' }}
       onClick={() => navigate(`/hosts/${hostSlug}/events/${event.slug}`)}
     >

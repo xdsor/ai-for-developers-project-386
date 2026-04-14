@@ -48,6 +48,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
                   color="brand"
                   onClick={() => onShare(event)}
                   title="Поделиться ссылкой"
+                  aria-label={`Поделиться ссылкой на событие ${event.title}`}
                 >
                   ⎘
                 </ActionIcon>
@@ -56,6 +57,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
                   color="accent"
                   onClick={() => onEdit(event)}
                   title="Редактировать"
+                  aria-label={`Редактировать событие ${event.title}`}
                 >
                   ✎
                 </ActionIcon>
@@ -64,6 +66,7 @@ export function EventsTable({ events, onEdit, onDelete, onShare }: EventsTablePr
                   color="danger"
                   onClick={() => onDelete(event.id)}
                   title="Удалить"
+                  aria-label={`Удалить событие ${event.title}`}
                 >
                   ✕
                 </ActionIcon>

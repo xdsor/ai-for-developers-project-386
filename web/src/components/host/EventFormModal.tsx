@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Modal, NumberInput, Stack, Text, TextInput, Textarea } from '@mantine/core'
+import { Alert, Button, Group, Modal, NumberInput, Stack, TextInput, Textarea } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { hostCreateEvent, hostUpdateEvent } from '../../api/client'
 import type { CreateEventRequest, Event } from '../../api/types'
@@ -138,7 +138,7 @@ export function EventFormModal({ opened, onClose, onSaved, hostId, event }: Even
             placeholder="my-event"
             description={
               !isEdit && !slugEdited ? (
-                <Text size="xs" c="dimmed">Генерируется автоматически из названия</Text>
+                'Генерируется автоматически из названия'
               ) : undefined
             }
           />

@@ -64,5 +64,14 @@ Key commands:
 - `npm run web:dev` runs only the frontend.
 - `npm run web:dev:backend` runs the frontend with the API proxy pointed at the Spring Boot backend.
 - `./backend/gradlew -p backend test` runs backend tests, including code generation and API integration tests.
+- `npm run test:e2e` runs Playwright E2E tests against the real backend flow.
+- `npm run test:e2e:ui` opens the Playwright UI runner.
 - `npm run web:build` creates the production frontend build.
 - `npm --prefix web run lint` runs ESLint for the frontend.
+
+## E2E Testing
+
+- End-to-end tests live in the root `e2e/` directory and use Playwright.
+- Playwright tests must run only against the real backend flow. Do not add Prism-based E2E coverage.
+- Prefer resilient selectors based on roles and labels. Add `aria-label` to interactive icon-only controls when needed for testability and accessibility.
+- Add `data-testid` only for genuinely unstable or hard-to-address UI states such as booking success confirmations or dynamic slot containers.
