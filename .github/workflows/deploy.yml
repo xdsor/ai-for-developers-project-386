@@ -1,0 +1,72 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+            typespec/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install TypeSpec dependencies
+        run: npm --prefix typespec ci
+
+      - name: Install web dependencies
+        run: npm --prefix web ci
+
+      - name: Verify backend tests
+        run: ./backend/gradlew -p backend test
+
+      - name: Verify web build
+        run: npm --prefix web run build
+
+      - name: Verify docker compose configuration
+        run: docker compose --env-file .env.example config
+
+      - name: Deploy to VPS over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
+          envs: DEPLOY_PATH
+          script: |
+            set -eu
+            DEPLOY_PATH="${DEPLOY_PATH:-/opt/meeting-booking}"
+            cd "$DEPLOY_PATH"
+            git fetch --all
+            git checkout main
+            git pull --ff-only origin main
+            test -f .env
+            docker compose pull caddy
+            docker compose up -d --build
+            docker image prune -f
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}

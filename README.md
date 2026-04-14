@@ -93,6 +93,51 @@ In docker profile:
 - API is served from `/api/*`
 - refreshing React Router routes returns the SPA instead of backend `404`
 
+### CD to VPS
+
+The repository includes a manual GitHub Actions deploy workflow in [.github/workflows/deploy.yml](/Users/dmitrysemenko/Projects/RealV2/ai-for-developers-project-386/.github/workflows/deploy.yml).
+
+The workflow:
+
+- runs backend tests
+- runs the frontend production build
+- validates `docker compose` config
+- connects to the VPS over SSH
+- updates the server checkout to `main`
+- runs `docker compose up -d --build`
+
+Required GitHub secrets for the `production` environment:
+
+- `VPS_HOST`
+- `VPS_USER`
+- `VPS_SSH_KEY`
+- `VPS_PORT` (optional, defaults to `22`)
+- `DEPLOY_PATH` (optional, defaults to `/opt/meeting-booking`)
+
+One-time VPS preparation:
+
+```bash
+sudo mkdir -p /opt/meeting-booking
+sudo chown "$USER":"$USER" /opt/meeting-booking
+git clone https://github.com/xdsor/ai-for-developers-project-386.git /opt/meeting-booking
+cd /opt/meeting-booking
+cp .env.example .env
+```
+
+Then edit `.env` on the server and set:
+
+- `APP_DOMAIN`
+- `LETSENCRYPT_EMAIL`
+
+The VPS also needs:
+
+- Docker Engine
+- Docker Compose plugin
+- inbound ports `80` and `443`
+- DNS for `APP_DOMAIN` pointing to the VPS
+
+After that, deploy manually from the GitHub Actions UI by running the `deploy` workflow.
+
 ### Frontend environment
 
 Copy `web/.env.example` to `web/.env` if you need to override defaults.
