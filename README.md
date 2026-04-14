@@ -95,16 +95,18 @@ In docker profile:
 
 ### CD to VPS
 
-The repository includes a manual GitHub Actions deploy workflow in [.github/workflows/deploy.yml](/Users/dmitrysemenko/Projects/RealV2/ai-for-developers-project-386/.github/workflows/deploy.yml).
+The repository includes a production deploy workflow in [.github/workflows/deploy.yml](/Users/dmitrysemenko/Projects/RealV2/ai-for-developers-project-386/.github/workflows/deploy.yml).
 
 The workflow:
 
-- runs backend tests
-- runs the frontend production build
-- validates `docker compose` config
+- starts only after the `e2e` workflow completes successfully on `main`
+- performs deploy responsibilities only
 - connects to the VPS over SSH
 - updates the server checkout to `main`
 - runs `docker compose up -d --build`
+
+To keep the deploy manual, configure the `production` environment in GitHub with required reviewers.
+Then the deploy job will appear after successful CI and wait for approval before it touches the VPS.
 
 Required GitHub secrets for the `production` environment:
 
@@ -136,7 +138,11 @@ The VPS also needs:
 - inbound ports `80` and `443`
 - DNS for `APP_DOMAIN` pointing to the VPS
 
-After that, deploy manually from the GitHub Actions UI by running the `deploy` workflow.
+After that:
+
+- push changes to `main`
+- wait for the `e2e` workflow to pass
+- approve the pending `deploy` job in the `production` environment
 
 ### Frontend environment
 
