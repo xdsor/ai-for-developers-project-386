@@ -1,7 +1,13 @@
 name: deploy
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - e2e
+    types:
+      - completed
+    branches:
+      - main
 
 concurrency:
   group: production-deploy
@@ -9,45 +15,10 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            web/package-lock.json
-            typespec/package-lock.json
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Install root dependencies
-        run: npm ci
-
-      - name: Install TypeSpec dependencies
-        run: npm --prefix typespec ci
-
-      - name: Install web dependencies
-        run: npm --prefix web ci
-
-      - name: Verify backend tests
-        run: ./backend/gradlew -p backend test
-
-      - name: Verify web build
-        run: npm --prefix web run build
-
-      - name: Verify docker compose configuration
-        run: docker compose --env-file .env.example config
-
       - name: Deploy to VPS over SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
