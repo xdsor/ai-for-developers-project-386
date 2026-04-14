@@ -61,6 +61,38 @@ npm run web:dev:backend
 npm run web:build
 ```
 
+### Docker deployment
+
+The repository includes a production `Dockerfile` and `docker-compose.yml`.
+
+Direct image run:
+
+```bash
+docker build -t meeting-booking-app .
+docker run --rm -e PORT=8080 -p 8080:8080 meeting-booking-app
+```
+
+In the container, Spring Boot serves both the API and the built React app. The app reads the listening port from `PORT`.
+
+Production compose with Caddy and Let's Encrypt:
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+
+Required DNS/network conditions:
+
+- `APP_DOMAIN` must point to the host running Docker
+- ports `80` and `443` must be reachable from the internet
+- Caddy obtains and renews Let's Encrypt certificates automatically
+
+In docker profile:
+
+- frontend is served from `/`
+- API is served from `/api/*`
+- refreshing React Router routes returns the SPA instead of backend `404`
+
 ### Frontend environment
 
 Copy `web/.env.example` to `web/.env` if you need to override defaults.
